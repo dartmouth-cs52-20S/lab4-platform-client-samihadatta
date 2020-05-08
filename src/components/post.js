@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 import TextareaAutosize from 'react-textarea-autosize';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+    faArrowCircleLeft,
+} from '@fortawesome/free-solid-svg-icons';
 import { fetchPost, deletePost, updatePost } from '../actions';
 
 class Post extends Component {
@@ -8,36 +13,25 @@ class Post extends Component {
         super(props);
         this.state = {
             isEditing: false,
-            // currentTitle: '',
-            // currentTags: '',
-            // currentContent: '',
-            // currentCoverURL: '',
+            currentTitle: '',
+            currentTags: '',
+            currentContent: '',
+            currentCoverUrl: '',
         };
     }
 
     componentDidMount() {
-        console.log('in component did mount');
-        // console.log(this.propsmatch);
-        console.log('id?');
-        console.log(this.props.match.params.postID);
         this.props.fetchPost(this.props.match.params.postID);
-        console.log('current post');
-        console.log(this.props.currentPost);
     }
 
     startEditing = () => {
-        console.log('we\'re editing!');
-        this.setState((prevState) => ({
-            isEditing: !prevState.isEditing,
+        this.setState(() => ({
+            isEditing: true,
             currentTitle: this.props.currentPost.title,
             currentTags: this.props.currentPost.tags,
             currentContent: this.props.currentPost.content,
-            currentCoverURL: this.props.currentPost.coverURL,
+            currentCoverUrl: this.props.currentPost.coverUrl,
         }));
-        console.log('state:');
-        console.log(this.state);
-        console.log('current post:');
-        console.log(this.props.currentPost);
     }
 
     stopEditing = () => {
@@ -45,19 +39,13 @@ class Post extends Component {
             title: this.state.currentTitle,
             tags: this.state.currentTags,
             content: this.state.currentContent,
-            coverURL: this.state.currentCoverURL,
+            coverUrl: this.state.currentCoverUrl,
             id: this.props.currentPost.id,
         };
 
-        this.setState((prevState) => ({
-            isEditing: !prevState.isEditing,
-            currentTitle: '',
-            currentTags: '',
-            currentContent: '',
-            currentCoverURL: '',
-        }));
+        this.props.updatePost(post, () => this.setState({ isEditing: false }));
 
-        this.props.updatePost(post, this.props.history);
+        // setTimeout(() => { this.setState({ isEditing: false }); }, 0);
     }
 
     onTitleChange = (event) => {
@@ -72,8 +60,13 @@ class Post extends Component {
         this.setState({ currentContent: event.target.value });
     }
 
-    onCoverURLChange = (event) => {
-        this.setState({ currentCoverURL: event.target.value });
+    onCoverUrlChange = (event) => {
+        this.setState({ currentCoverUrl: event.target.value });
+    }
+
+    handleDelete = (event) => {
+        event.preventDefault(); // just in case
+        this.props.deletePost(this.props.currentPost.id, this.props.history);
     }
 
     renderTitle = () => {
@@ -112,14 +105,16 @@ class Post extends Component {
         }
     }
 
-    renderCoverURL = () => {
+    renderCoverUrl = () => {
         if (this.state.isEditing) {
             return (
-                <TextareaAutosize value={this.state.currentCoverURL} placeholder="title" onChange={this.onCoverURLChange} />
+                <TextareaAutosize value={this.state.currentCoverUrl} placeholder="coverUrl" onChange={this.onCoverUrlChange} />
             );
         } else {
             return (
-                <div>Cover URL: {this.props.currentPost.coverURL}</div>
+                <div>Cover Url: {this.props.currentPost.coverUrl}
+                    <img src={this.props.currentPost.coverUrl} alt="coverUrl" />
+                </div>
             );
         }
     }
@@ -136,28 +131,73 @@ class Post extends Component {
         }
     }
 
+    renderDeleteButton = () => {
+        return (
+            <button type="submit"
+                onClick={this.handleDelete}
+            >
+                Delete Me
+            </button>
+        );
+    }
+
+    renderShow = () => {
+        return (
+            <div className="post">
+                <div>Title: {this.props.currentPost.title}</div>
+                <div>Tags: {this.props.currentPost.tags}</div>
+                <div>Cover Url: {this.props.currentPost.coverUrl}
+                    <img src={this.props.currentPost.coverUrl} alt="coverUrl" />
+                </div>
+                <div>Content: {this.props.currentPost.content}</div>
+            </div>
+        );
+    }
+
+    renderEditing = () => {
+        return (
+            <div className="post">
+                <div>Title</div>
+                <TextareaAutosize value={this.state.currentTitle} placeholder="title" onChange={this.onTitleChange} />                <div>Tags: {this.props.currentPost.tags}</div>
+                <div>Cover Url: {this.props.currentPost.coverUrl}
+                    <img src={this.props.currentPost.coverUrl} alt="coverUrl" />
+                </div>
+                <div>Content: {this.props.currentPost.content}</div>
+            </div>
+        );
+    }
+
     render() {
-        console.log('in post render');
-        console.log(this.props);
-        console.log('current post');
-        console.log(this.props.currentPost);
         if (this.props.currentPost === undefined || this.props.currentPost.length <= 0) {
             return (
                 <div>Post is loading!</div>
             );
-        } else { // if (this.props.currentPost !== undefined && this.props.currentPost.length < 0) {
-            console.log('not undefined!');
+        } else if (this.state.isEditing) {
             return (
-                <div>
-                    Id: {this.props.currentPost.id}
-                    {this.renderTitle()}
-                    {this.renderTags()}
-                    {this.renderContent()}
-                    {this.renderCoverURL()}
-                    <button type="submit" onClick={this.props.deletePost}>Delete Me</button>
-                </div>
+                {this.renderEditing()}
             );
+        } else {
+            return (
+                {this.renderShow()}
+                );
         }
+        // } else { // if (this.props.currentPost !== undefined && this.props.currentPost.length < 0) {
+        //     return (
+        //         <div className="post">
+        //             Id: {this.props.currentPost.id}
+        //             {this.renderTitle()}
+        //             {this.renderTags()}
+        //             {this.renderContent()}
+        //             {this.renderCoverUrl()}
+        //             {this.renderUpdateButton()}
+        //             <button type="submit"
+        //                 onClick={this.handleDelete}
+        //             >
+        //                 Delete Me
+        //             </button>
+        //         </div>
+        //     );
+        // }
     }
 }
 

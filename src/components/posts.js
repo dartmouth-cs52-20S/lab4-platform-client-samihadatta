@@ -9,25 +9,28 @@ import { fetchPosts } from '../actions';
 class Posts extends Component {
     // on component did mount, call fetchPosts
     componentDidMount() {
-        console.log('in posts did mount');
         this.props.fetchPosts();
     }
 
     render() {
-        console.log('in posts render');
-        console.log('props:');
-        console.log(this.props);
-        console.log('going into map');
         if (this.props.posts !== undefined) {
             const posts = this.props.posts.map((post) => {
                 return <NavLink to={`/posts/${post.id}`} key={post.id}><PostThumbnail key={post.id} post={post} /></NavLink>;
             });
-
-            return (
-                <div id="posts">
-                    {posts}
-                </div>
-            );
+            if (posts.length > 0) {
+                return (
+                    <div id="posts">
+                        <div className="header"> Posts</div>
+                        {posts}
+                    </div>
+                );
+            } else {
+                return (
+                    <div id="posts">
+                        No posts here yet!
+                    </div>
+                );
+            }
         } else {
             return (
                 <div>Loading!</div>

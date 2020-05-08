@@ -25,7 +25,7 @@ export function fetchPosts() {
         axios.get(`${ROOT_URL}/posts${API_KEY}`)
             .then((response) => {
                 // once we are done fetching we can dispatch a redux action with the response data
-                console.log('fetch post response');
+                console.log('response');
                 console.log(response);
                 dispatch({ type: ActionTypes.FETCH_POSTS, payload: response.data });
             })
@@ -35,6 +35,8 @@ export function fetchPosts() {
                 // have an error component somewhere show it
                 dispatch({ type: ActionTypes.ERROR_SET, error });
                 // might you also want an ERROR_CLEAR action?
+                console.log('error');
+                console.log(error);
             });
     };
 }
@@ -46,37 +48,48 @@ export function createPost(post, history) {
             .then((response) => {
                 dispatch({ type: ActionTypes.CREATE_POST, payload: response.data });
                 history.push('/');
+                console.log('response');
+                console.log(response);
             })
             .catch((error) => {
                 dispatch({ type: ActionTypes.ERROR_SET, error });
+                console.log('error');
+                console.log(error);
             });
     };
 }
 
-export function updatePost(post) {
+export function updatePost(post, callback) {
     /* axios put */
     return (dispatch) => {
         axios.put(`${ROOT_URL}/posts/${post.id}${API_KEY}`, post)
             .then((response) => {
-                dispatch({ type: ActionTypes.FETCH_POSTS, payload: response.data });
+                dispatch({ type: ActionTypes.UPDATE_POST, payload: response.data });
+                callback();
+                console.log('response');
+                console.log(response);
             })
             .catch((error) => {
-                dispatch({ type: ActionTypes.ERROR_SET, error });
+                // dispatch({ type: ActionTypes.ERROR_SET, error });
+                console.log('error');
+                console.log(error);
             });
     };
 }
 
 export function fetchPost(id) {
-    console.log('in fetch post');
     /* axios get */
     return (dispatch) => {
         axios.get(`${ROOT_URL}/posts/${id}${API_KEY}`)
             .then((response) => {
-                console.log('fetch post response');
-                console.log(response.data);
                 dispatch({ type: ActionTypes.FETCH_POST, payload: response.data });
+                console.log('response');
+                console.log(response);
             })
-            .catch((error) => console.log(error));
+            .catch((error) => {
+                console.log('error');
+                console.log(error);
+            });
     };
 }
 
@@ -86,9 +99,13 @@ export function deletePost(id, history) {
         axios.delete(`${ROOT_URL}/posts/${id}${API_KEY}`)
             .then((response) => {
                 dispatch({ type: ActionTypes.DELETE_POST, payload: response.data });
+                history.push('/');
+                console.log('response');
+                console.log(response);
             })
-            .catch(
-
-            );
+            .catch((error) => {
+                console.log('error');
+                console.log(error);
+            });
     };
 }

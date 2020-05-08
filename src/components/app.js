@@ -7,6 +7,8 @@ import Nav from './navbar';
 import Posts from './posts';
 import Post from './post';
 import NewPost from './new-post';
+import Fallback from './fallback';
+
 
 const App = (props) => {
     return (
@@ -17,7 +19,7 @@ const App = (props) => {
                     <Route exact path="/" component={Posts} />
                     <Route path="/posts/new" component={NewPost} />
                     <Route path="/posts/:postID" component={Post} />
-                    <Route render={() => (<div>post not found </div>)} />
+                    <Route component={Fallback} />
                 </Switch>
             </div>
         </Router>

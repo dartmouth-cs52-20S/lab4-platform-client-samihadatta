@@ -1,18 +1,120 @@
+$textcolor:(5,5,5);
+$tagcolor: gray;
+$iconcolor:rgb(0,0,12);
+
 body, html {
     font-family: "Roboto", sans-serif;
     height: 100%;
+    width: 100%;
+    color: $textcolor;
+    margin: 0;
 }
 
 .active {
     text-decoration: underline;
 }
 
+.navbar {
+    width: 100%;
+    text-decoration: none;
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #F3F3F3;
+    div > a {
+        text-decoration: none;
+    }
+    .site-title {
+        padding: 0.5rem;
+    }
+    .nav-actions {
+        display: flex;
+        flex-direction: row;
+        div {
+            padding: 0.5rem;
+        }
+    }
+    .icon {
+        font-size: x-large;
+        color: $iconcolor;
+    }
+}
+
 #posts {
+    background-color: mediumaquamarine;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    color: $textcolor;
     li {
         list-style: none;
+    }
+    a {
+        text-decoration: none;
+        color: $textcolor;
     }
     .thumbnail {
         flex-direction: column;
         display: flex;
+        background-color: #F3F3F3;
+        box-shadow: 0 0.25em 0.125em 0 rgba(0, 0, 0, 0.3);
+        max-width: 30%;
+        padding: 1rem;
+        border-radius: 0.2rem;
+        color: $textcolor;
+        .thumbnailTitle {
+            color: $textcolor;
+        }
+        .thumbnailTags {
+            color: $tagcolor;
+        }
+        img {
+            width: 100%;
+        }
     }
+}
+
+.header {
+    font-size: x-large;
+    text-align: center;
+    width: 100%;
+    padding: 1.25rem;
+}
+
+.action-button {
+    display: flex;
+    flex-direction: row;
+    padding: 1rem;
+    background-color: gray;
+    border-radius: 0.5rem;
+    .action-button-text {
+        text-transform: uppercase;
+        padding: 0 0.5rem 0;
+    }
+}
+
+#fallback {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem;
+    img {
+        width: 80%;
+    }
+    .fallback-text {
+        padding: 2rem;
+        font-size: large;
+    }
+    a {
+        text-decoration: none;
+    }
+}
+
+.post {
+    display: flex;
+    flex-direction: column;
+    
 }
