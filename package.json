@@ -10,7 +10,7 @@
     "test": "eslint src/**.js",
     "build": "yarn clean; NODE_ENV=production webpack --colors",
     "clean": "rimraf dist",
-    "deploy": "yarn build; surge -p dist -d samihadatta-cs52-starter.surge.sh; yarn clean"
+    "deploy": "yarn build; surge -p dist -d samihadatta-cs52-reduxplatform.surge.sh; yarn clean"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -50,6 +50,7 @@
     "image-webpack-loader": "^6.0.0",
     "jquery": "^3.5.0",
     "lodash.debounce": "^4.0.8",
+    "marked": "^1.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",

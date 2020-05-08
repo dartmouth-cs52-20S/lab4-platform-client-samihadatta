@@ -1,12 +1,16 @@
+/* eslint-disable react/no-danger */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import TextareaAutosize from 'react-textarea-autosize';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faArrowCircleLeft,
+    faChevronLeft, faEdit, faTimes, faCheck, faTrash,
 } from '@fortawesome/free-solid-svg-icons';
+import marked from 'marked';
 import { fetchPost, deletePost, updatePost } from '../actions';
+import { imageUrlWorks } from './lib';
 
 class Post extends Component {
     constructor(props) {
@@ -34,7 +38,7 @@ class Post extends Component {
         }));
     }
 
-    stopEditing = () => {
+    handleUpdatePost = () => {
         const post = {
             title: this.state.currentTitle,
             tags: this.state.currentTags,
@@ -46,6 +50,16 @@ class Post extends Component {
         this.props.updatePost(post, () => this.setState({ isEditing: false }));
 
         // setTimeout(() => { this.setState({ isEditing: false }); }, 0);
+    }
+
+    cancelUpdate = () => {
+        this.setState(() => ({
+            isEditing: false,
+            currentTitle: this.props.currentPost.title,
+            currentTags: this.props.currentPost.tags,
+            currentContent: this.props.currentPost.content,
+            currentCoverUrl: this.props.currentPost.coverUrl,
+        }));
     }
 
     onTitleChange = (event) => {
@@ -141,28 +155,60 @@ class Post extends Component {
         );
     }
 
+    renderCoverImage = () => {
+        if (imageUrlWorks(this.props.currentPost.coverUrl)) {
+            return (
+                // eslint-disable-next-line jsx-a11y/img-redundant-alt
+                <img src={this.props.currentPost.coverUrl} className="post-cover-img" alt={`image found at: ${this.props.currentPost.coverUrl}`} />
+            );
+        } else {
+            return <div />;
+        }
+    }
+
     renderShow = () => {
         return (
             <div className="post">
-                <div>Title: {this.props.currentPost.title}</div>
-                <div>Tags: {this.props.currentPost.tags}</div>
-                <div>Cover Url: {this.props.currentPost.coverUrl}
-                    <img src={this.props.currentPost.coverUrl} alt="coverUrl" />
+                <div className="post-icons">
+                    <NavLink to="/"><FontAwesomeIcon icon={faChevronLeft} /></NavLink>
+                    <div className="edit-icons">
+                        <FontAwesomeIcon icon={faEdit} onClick={this.startEditing} className="icon" />
+                        <FontAwesomeIcon icon={faTrash} onClick={this.handleDelete} className="icon" />
+                    </div>
                 </div>
-                <div>Content: {this.props.currentPost.content}</div>
+                <div className="post-info">
+                    <div className="post-title">{this.props.currentPost.title}</div>
+                    <div className="post-tags">{this.props.currentPost.tags}</div>
+                    {this.renderCoverImage()}
+                    {/* <div className="post-coverUrl">{this.props.currentPost.coverUrl}
+                        <img src={this.props.currentPost.coverUrl} alt="coverUrl" />
+                    </div> */}
+                    <div className="post-content" dangerouslySetInnerHTML={{ __html: marked(this.props.currentPost.content || '') }} />
+                </div>
             </div>
         );
     }
 
     renderEditing = () => {
         return (
-            <div className="post">
-                <div>Title</div>
-                <TextareaAutosize value={this.state.currentTitle} placeholder="title" onChange={this.onTitleChange} />                <div>Tags: {this.props.currentPost.tags}</div>
-                <div>Cover Url: {this.props.currentPost.coverUrl}
-                    <img src={this.props.currentPost.coverUrl} alt="coverUrl" />
+            <div className="post post-edit">
+                <div className="post-icons">
+                    <NavLink to="/"><FontAwesomeIcon icon={faChevronLeft} /></NavLink>
+                    <FontAwesomeIcon icon={faTrash} onClick={this.handleDelete} />
                 </div>
-                <div>Content: {this.props.currentPost.content}</div>
+                <div className="header">Edit Post</div>
+                <div className="edit-label">Title</div>
+                <TextareaAutosize value={this.state.currentTitle} placeholder="title" onChange={this.onTitleChange} />
+                <div className="edit-label">Tags</div>
+                <TextareaAutosize value={this.state.currentTaags} placeholder="tags" onChange={this.onTagsChange} />
+                <div className="edit-label">Cover Url</div>
+                <TextareaAutosize value={this.state.currentCoverUrl} placeholder="coverUrl" onChange={this.onCoverUrlChange} />
+                <div className="edit-label">Content</div>
+                <TextareaAutosize value={this.state.currentContent} placeholder="content" onChange={this.onContentChange} />
+                <div className="edit-actions">
+                    <div onClick={this.handleUpdatePost}><FontAwesomeIcon icon={faCheck} />Update Post</div>
+                    <div onClick={this.cancelUpdate}><FontAwesomeIcon icon={faTimes} />Cancel</div>
+                </div>
             </div>
         );
     }
@@ -172,15 +218,28 @@ class Post extends Component {
             return (
                 <div>Post is loading!</div>
             );
-        } else if (this.state.isEditing) {
+        } else if (this.state.isEditing) { // if (this.props.currentPost !== undefined && this.props.currentPost.length < 0) {
             return (
-                {this.renderEditing()}
+                <div>
+                    {this.renderEditing()}
+                </div>
             );
         } else {
             return (
-                {this.renderShow()}
-                );
+                <div>
+                    {this.renderShow()}
+                </div>
+            );
         }
+        // } else if (this.state.isEditing) {
+        //     return (
+        //         {this.renderEditing()}
+        //     );
+        // } else {
+        //     return (
+        //         {this.renderShow()}
+        //         );
+        // }
         // } else { // if (this.props.currentPost !== undefined && this.props.currentPost.length < 0) {
         //     return (
         //         <div className="post">

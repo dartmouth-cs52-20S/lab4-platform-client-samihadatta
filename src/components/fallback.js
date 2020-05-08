@@ -14,7 +14,6 @@ const Fallback = () => {
                     <div className="action-button">
                         <FontAwesomeIcon icon={faList} />
                         <div className="action-button-text">Back to posts</div>
-                        <FontAwesomeIcon icon={faList} />
                     </div>
                 </NavLink>
             </div>
