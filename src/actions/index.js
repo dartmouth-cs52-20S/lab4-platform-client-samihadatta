@@ -119,12 +119,6 @@ export function deletePost(id, history) {
     };
 }
 
-// export function errorSet(message) {
-//     return (dispatch) => {
-//         dispatch({ type: ActionTypes.ERROR_SET, payload: message });
-//     };
-// }
-
 export function errorClear() {
     console.log('in error clear');
     return (dispatch) => {

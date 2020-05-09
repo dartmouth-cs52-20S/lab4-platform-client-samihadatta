@@ -10,7 +10,7 @@ import {
 const Nav = (props) => {
     return (
         <nav className="navbar">
-            <div className="site-title"><NavLink exact to="/"><FontAwesomeIcon icon={faFeather} className="icon" /></NavLink></div>
+            <div className="site-title"><NavLink exact to="/"><FontAwesomeIcon icon={faFeather} className="icon" id="title" /></NavLink></div>
             <div className="nav-actions">
                 <div><NavLink exact to="/"><FontAwesomeIcon icon={faList} className="icon" /></NavLink></div>
                 <div><NavLink to="/posts/new"><FontAwesomeIcon icon={faPlusCircle} className="icon" /></NavLink></div>

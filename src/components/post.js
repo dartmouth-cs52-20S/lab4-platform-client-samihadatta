@@ -23,6 +23,7 @@ class Post extends Component {
             currentTags: '',
             currentContent: '',
             currentCoverUrl: '',
+            coverUrlFail: false,
         };
     }
 
@@ -38,19 +39,25 @@ class Post extends Component {
             currentContent: this.props.currentPost.content,
             currentCoverUrl: this.props.currentPost.coverUrl,
         }));
+        console.log(this.props.currentPost.tags);
     }
 
     handleUpdatePost = () => {
-        const post = {
-            title: this.state.currentTitle,
-            tags: this.state.currentTags,
-            content: this.state.currentContent,
-            coverUrl: this.state.currentCoverUrl,
-            id: this.props.currentPost.id,
-        };
+        if (imageUrlWorks(this.state.currentCoverUrl) || this.state.currentCoverUrl === '') {
+            this.setState({ coverUrlFail: false });
 
-        this.props.updatePost(post, () => this.setState({ isEditing: false }));
+            const post = {
+                title: this.state.currentTitle,
+                tags: this.state.currentTags,
+                content: this.state.currentContent,
+                coverUrl: this.state.currentCoverUrl,
+                id: this.props.currentPost.id,
+            };
 
+            this.props.updatePost(post, () => this.setState({ isEditing: false }));
+        } else {
+            this.setState({ coverUrlFail: true });
+        }
         // setTimeout(() => { this.setState({ isEditing: false }); }, 0);
     }
 
@@ -96,6 +103,14 @@ class Post extends Component {
         }
     }
 
+    renderCoverUrlError = () => {
+        if (this.state.coverUrlFail) {
+            return (<div className="error-message">Invalid cover image URL!</div>);
+        } else {
+            return <div />;
+        }
+    }
+
     renderShow = () => {
         return (
             <div className="post">
@@ -131,11 +146,12 @@ class Post extends Component {
                     </div>
                     <div className="edit-field">
                         <div className="edit-label">Tags</div>
-                        <TextareaAutosize value={this.state.currentTaags} placeholder="tags" onChange={this.onTagsChange} />
+                        <TextareaAutosize value={this.state.currentTags} placeholder="tags" onChange={this.onTagsChange} />
                     </div>
                     <div className="edit-field">
                         <div className="edit-label">Cover Url</div>
                         <TextareaAutosize value={this.state.currentCoverUrl} placeholder="coverUrl" onChange={this.onCoverUrlChange} />
+                        {this.renderCoverUrlError()}
                     </div>
                     <div className="edit-field">
                         <div className="edit-label">Content</div>
