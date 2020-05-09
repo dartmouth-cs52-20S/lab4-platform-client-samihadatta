@@ -1,9 +1,10 @@
+/* eslint-disable no-use-before-define */
 // keys for actiontypes
 
 import axios from 'axios';
 
 const ROOT_URL = 'https://platform.cs52.me/api';
-const API_KEY = '?key=samiha_datta';
+const API_KEY = '?key=s_datta';
 
 export const ActionTypes = {
     FETCH_POSTS: 'FETCH_POSTS',
@@ -13,6 +14,7 @@ export const ActionTypes = {
     DELETE_POST: 'DELETE_POST',
     SELECT_POST: 'SELECT_POST',
     ERROR_SET: 'ERROR_SET',
+    ERROR_CLEAR: 'ERROR_CLEAR',
 };
 
 
@@ -82,9 +84,16 @@ export function fetchPost(id) {
     return (dispatch) => {
         axios.get(`${ROOT_URL}/posts/${id}${API_KEY}`)
             .then((response) => {
-                dispatch({ type: ActionTypes.FETCH_POST, payload: response.data });
-                console.log('response');
-                console.log(response);
+                if (!('message' in response.data)) {
+                    dispatch({ type: ActionTypes.FETCH_POST, payload: response.data });
+                    dispatch({ type: ActionTypes.ERROR_CLEAR, payload: '' });
+                } else {
+                    // errorSet(response.data.message);
+                    dispatch({ type: ActionTypes.ERROR_SET, payload: response.data.message });
+                }
+                // dispatch({ type: ActionTypes.FETCH_POST, payload: response.data });
+                // console.log('response');
+                // console.log(response);
             })
             .catch((error) => {
                 console.log('error');
@@ -107,5 +116,18 @@ export function deletePost(id, history) {
                 console.log('error');
                 console.log(error);
             });
+    };
+}
+
+// export function errorSet(message) {
+//     return (dispatch) => {
+//         dispatch({ type: ActionTypes.ERROR_SET, payload: message });
+//     };
+// }
+
+export function errorClear() {
+    console.log('in error clear');
+    return (dispatch) => {
+        dispatch({ type: ActionTypes.ERROR_CLEAR, payload: '' });
     };
 }

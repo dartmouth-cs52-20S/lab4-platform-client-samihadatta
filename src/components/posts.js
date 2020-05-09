@@ -20,7 +20,7 @@ class Posts extends Component {
             <div className="empty-state">
                 <div className="header">There are no posts here yet!</div>
                 <img src="https://media.giphy.com/media/vvWhQsVAFkyisScAsM/giphy.gif" alt=" " />
-                <NavLink to="/posts/new">
+                <NavLink to="/posts/new" id="empty-state-button">
                     <div className="action-button">
                         <FontAwesomeIcon icon={faPlus} />
                         <div className="action-button-text">Create a post</div>
@@ -33,7 +33,7 @@ class Posts extends Component {
     render() {
         if (this.props.posts !== undefined) {
             const posts = this.props.posts.map((post) => {
-                return <NavLink to={`/posts/${post.id}`} key={post.id}><PostThumbnail key={post.id} post={post} /></NavLink>;
+                return <NavLink className=".thumbnail-wrapper" to={`/posts/${post.id}`} key={post.id}><PostThumbnail key={post.id} post={post} /></NavLink>;
             });
             if (posts.length > 0) {
                 return (
@@ -44,7 +44,7 @@ class Posts extends Component {
                 );
             } else {
                 return (
-                    <div id="posts">
+                    <div id="posts" className="center-me">
                         {this.renderEmptyState()}
                     </div>
                 );

@@ -3,6 +3,7 @@ import { ActionTypes } from '../actions';
 const initialState = {
     all: [],
     current: {},
+    error: '',
 };
 
 const PostReducer = (state = initialState, action) => {
@@ -13,6 +14,10 @@ const PostReducer = (state = initialState, action) => {
         return { ...state, current: action.payload };
     case ActionTypes.FETCH_POST:
         return { ...state, current: action.payload };
+    // case ActionTypes.ERROR_SET:
+    //     return { ...state, error: action.payload };
+    // case ActionTypes.ERROR_CLEAR:
+    //     return { ...state, error: '' };
     default:
         return state;
     }
