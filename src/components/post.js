@@ -88,7 +88,7 @@ class Post extends Component {
     }
 
     handleDelete = (event) => {
-        event.preventDefault(); // just in case
+        event.preventDefault(); // just in case (Trevor's idea)
         this.props.deletePost(this.props.currentPost.id, this.props.history);
     }
 
