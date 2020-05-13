@@ -31,9 +31,12 @@ class Posts extends Component {
     }
 
     render() {
-        if (this.props.posts !== undefined) {
+        console.log('posts (in render for posts)');
+        console.log(this.props.posts);
+        if (this.props.posts !== undefined && this.props.posts.length > 0) {
+            console.log('first if');
             const posts = this.props.posts.map((post) => {
-                return <NavLink className=".thumbnail-wrapper" to={`/posts/${post.id}`} key={post.id}><PostThumbnail key={post.id} post={post} /></NavLink>;
+                return <NavLink className=".thumbnail-wrapper" to={`/posts/${post._id}`} key={post._id}><PostThumbnail key={post._id} post={post} /></NavLink>;
             });
             if (posts.length > 0) {
                 return (
@@ -52,7 +55,7 @@ class Posts extends Component {
         } else {
             return (
                 <div>
-                    {Loading}
+                    <Loading />
                 </div>
             );
         }

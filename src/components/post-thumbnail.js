@@ -15,7 +15,7 @@ const PostThumbnail = (props) => {
     };
     return (
         // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-        <div className="thumbnail" onClick={() => props.fetchPost(props.post.id)}>
+        <div className="thumbnail" onClick={() => props.fetchPost(props.post._id)}>
             {renderImage()}
             <div className="thumbnailTitle">{props.post.title}</div>
             <div className="thumbnailTags">{props.post.tags}</div>

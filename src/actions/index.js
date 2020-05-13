@@ -3,8 +3,9 @@
 
 import axios from 'axios';
 
-const ROOT_URL = 'https://platform.cs52.me/api';
-const API_KEY = '?key=s_datta';
+const ROOT_URL = 'http://localhost:9090/api';
+// const ROOT_URL = 'https://platform.cs52.me/api';
+// const API_KEY = '?key=s_datta';
 
 export const ActionTypes = {
     FETCH_POSTS: 'FETCH_POSTS',
@@ -24,7 +25,7 @@ export function fetchPosts() {
     // remember (arg) => { } is a function
     console.log('in fetchposts');
     return (dispatch) => {
-        axios.get(`${ROOT_URL}/posts${API_KEY}`)
+        axios.get(`${ROOT_URL}/posts`)
             .then((response) => {
                 // once we are done fetching we can dispatch a redux action with the response data
                 console.log('response');
@@ -45,8 +46,10 @@ export function fetchPosts() {
 
 export function createPost(post, history) {
     /* axios post */
+    // eslint-disable-next-line no-param-reassign
+    // post.tags = post.tags.split(',');
     return (dispatch) => {
-        axios.post(`${ROOT_URL}/posts/${API_KEY}`, post)
+        axios.post(`${ROOT_URL}/posts`, post)
             .then((response) => {
                 dispatch({ type: ActionTypes.CREATE_POST, payload: response.data });
                 history.push('/');
@@ -63,8 +66,9 @@ export function createPost(post, history) {
 
 export function updatePost(post, callback) {
     /* axios put */
+    // post.tags = post.tags.split(',');
     return (dispatch) => {
-        axios.put(`${ROOT_URL}/posts/${post.id}${API_KEY}`, post)
+        axios.put(`${ROOT_URL}/posts/${post._id}`, post)
             .then((response) => {
                 dispatch({ type: ActionTypes.UPDATE_POST, payload: response.data });
                 callback();
@@ -82,7 +86,7 @@ export function updatePost(post, callback) {
 export function fetchPost(id) {
     /* axios get */
     return (dispatch) => {
-        axios.get(`${ROOT_URL}/posts/${id}${API_KEY}`)
+        axios.get(`${ROOT_URL}/posts/${id}`)
             .then((response) => {
                 if (!('message' in response.data)) {
                     dispatch({ type: ActionTypes.FETCH_POST, payload: response.data });
@@ -105,7 +109,7 @@ export function fetchPost(id) {
 export function deletePost(id, history) {
     /* axios delete */
     return (dispatch) => {
-        axios.delete(`${ROOT_URL}/posts/${id}${API_KEY}`)
+        axios.delete(`${ROOT_URL}/posts/${id}`)
             .then((response) => {
                 dispatch({ type: ActionTypes.DELETE_POST, payload: response.data });
                 history.push('/');

@@ -38,9 +38,15 @@ class NewPost extends Component {
 
     createPost = () => {
         if (imageUrlWorks(this.state.coverURL) || this.state.coverURL === '') {
+            const tags = this.state.tags.split(',');
+            // eslint-disable-next-line no-plusplus
+            for (let i = 0; i < tags.length; i++) {
+                tags[i].trim();
+            }
             const post = {
                 title: this.state.title,
-                tags: this.state.tags,
+                // tags: this.state.tags.split(','),
+                tags,
                 content: this.state.content,
                 coverURL: this.state.coverURL,
             };

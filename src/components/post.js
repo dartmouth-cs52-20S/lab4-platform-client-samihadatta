@@ -35,7 +35,7 @@ class Post extends Component {
         this.setState(() => ({
             isEditing: true,
             currentTitle: this.props.currentPost.title,
-            currentTags: this.props.currentPost.tags,
+            currentTags: this.props.currentPost.tags.join(','),
             currentContent: this.props.currentPost.content,
             currentCoverUrl: this.props.currentPost.coverUrl,
         }));
@@ -43,18 +43,32 @@ class Post extends Component {
     }
 
     handleUpdatePost = () => {
-        if (imageUrlWorks(this.state.currentCoverUrl) || this.state.currentCoverUrl === '') {
+        if (imageUrlWorks(this.state.currentCoverUrl) || this.state.currentCoverUrl === '' || this.state.currentCoverUrl === undefined) {
             this.setState({ coverUrlFail: false });
-
+            console.log('current tags');
+            console.log(this.state.currentTags);
+            let tags = this.state.currentTags;
+            tags = tags.split(',');
+            console.log('tags');
+            console.log(tags);
+            // eslint-disable-next-line no-plusplus
+            for (let i = 0; i < tags.length; i++) {
+                tags[i] = tags[i].trim();
+            }
+            console.log('trimmed tags');
+            console.log(tags);
             const post = {
                 title: this.state.currentTitle,
-                tags: this.state.currentTags,
+                tags,
+                // tags: this.state.currentTags,
                 content: this.state.currentContent,
                 coverUrl: this.state.currentCoverUrl,
-                id: this.props.currentPost.id,
+                _id: this.props.currentPost._id,
             };
 
             this.props.updatePost(post, () => this.setState({ isEditing: false }));
+            console.log('trying to fix');
+            console.log(this.props.currentPost);
         } else {
             this.setState({ coverUrlFail: true });
         }
@@ -89,7 +103,7 @@ class Post extends Component {
 
     handleDelete = (event) => {
         event.preventDefault(); // just in case (Trevor's idea)
-        this.props.deletePost(this.props.currentPost.id, this.props.history);
+        this.props.deletePost(this.props.currentPost._id, this.props.history);
     }
 
     renderCoverImage = () => {
@@ -104,6 +118,7 @@ class Post extends Component {
     }
 
     renderCoverUrlError = () => {
+        console.log(this.state.coverUrl);
         if (this.state.coverUrlFail) {
             return (<div className="error-message">Invalid cover image URL!</div>);
         } else {
@@ -112,6 +127,10 @@ class Post extends Component {
     }
 
     renderShow = () => {
+        console.log('currentPost in render');
+        console.log(this.props.currentPost);
+        console.log(this.props.currentPost.tags);
+        const tagsString = this.props.currentPost.tags.join(',');
         return (
             <div className="post">
                 <div className="post-icons">
@@ -123,7 +142,7 @@ class Post extends Component {
                 </div>
                 <div className="post-info">
                     <div className="post-title">{this.props.currentPost.title}</div>
-                    <div className="post-tags">{this.props.currentPost.tags}</div>
+                    <div className="post-tags">{tagsString}</div>
                     {this.renderCoverImage()}
                     <div className="post-content" dangerouslySetInnerHTML={{ __html: marked(this.props.currentPost.content || '') }} />
                 </div>
@@ -132,6 +151,11 @@ class Post extends Component {
     }
 
     renderEditing = () => {
+        // const tags = this.state.currentTags.join(',');
+        // console.log('tags views');
+        console.log(this.state.currentTags);
+        console.log('current cover url');
+        console.log(this.state.currentCoverUrl);
         return (
             <div className="post post-edit">
                 <div className="post-icons">
@@ -168,7 +192,9 @@ class Post extends Component {
     }
 
     render() {
-        if (this.props.currentPost === undefined || this.props.currentPost.length <= 0) {
+        console.log('in render');
+        console.log(Object.keys(this.props.currentPost).length);
+        if (this.props.currentPost === undefined || Object.keys(this.props.currentPost).length <= 0 || this.props.currentPost === {}) {
             return (
                 <div>
                     <ErrorModal />
@@ -183,6 +209,7 @@ class Post extends Component {
                 </div>
             );
         } else {
+            console.log('we in here');
             return (
                 <div>
                     <ErrorModal appElement={document.getElementById('post')} />
