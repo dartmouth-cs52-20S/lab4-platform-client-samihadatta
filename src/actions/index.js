@@ -3,7 +3,8 @@
 
 import axios from 'axios';
 
-const ROOT_URL = 'http://localhost:9090/api';
+const ROOT_URL = 'https://samihadatta-cs52-blog-v2.herokuapp.com/api';
+// const ROOT_URL = 'http://localhost:9090/api';
 // const ROOT_URL = 'https://platform.cs52.me/api';
 // const API_KEY = '?key=s_datta';
 
@@ -16,6 +17,11 @@ export const ActionTypes = {
     SELECT_POST: 'SELECT_POST',
     ERROR_SET: 'ERROR_SET',
     ERROR_CLEAR: 'ERROR_CLEAR',
+    // FETCH_COMMENTS: 'FETCH_COMMENTS',
+    // FETCH_COMMENT: 'FETCH_COMMENT',
+    // ADD_COMMENT: 'ADD_COMMENT',
+    // UPDATE_COMMENT: 'UPDATE_COMMENT',
+    // DELETE_COMMENT: 'DELETE_COMMENT',
 };
 
 

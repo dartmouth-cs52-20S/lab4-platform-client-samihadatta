@@ -293,8 +293,8 @@ body, html {
 
 .edit-field {
     width: 80%;
-    TextareaAutosize {
-        width: 100;
+    textarea {
+        width: 100%;
     }
     margin: 0.75rem;
     align-self: center;

@@ -16,7 +16,7 @@ class NewPost extends Component {
             title: '',
             content: '',
             tags: '',
-            coverURL: '',
+            coverUrl: '',
         };
     }
 
@@ -32,12 +32,14 @@ class NewPost extends Component {
         this.setState({ content: event.target.value });
     }
 
-    onCoverURLChange = (event) => {
-        this.setState({ coverURL: event.target.value });
+    oncoverUrlChange = (event) => {
+        this.setState({ coverUrl: event.target.value });
     }
 
     createPost = () => {
-        if (imageUrlWorks(this.state.coverURL) || this.state.coverURL === '') {
+        console.log('coverUrl');
+        console.log(this.state.coverUrl);
+        if (imageUrlWorks(this.state.coverUrl) || this.state.coverUrl === '') {
             const tags = this.state.tags.split(',');
             // eslint-disable-next-line no-plusplus
             for (let i = 0; i < tags.length; i++) {
@@ -45,10 +47,9 @@ class NewPost extends Component {
             }
             const post = {
                 title: this.state.title,
-                // tags: this.state.tags.split(','),
                 tags,
                 content: this.state.content,
-                coverURL: this.state.coverURL,
+                coverUrl: this.state.coverUrl,
             };
             this.props.createPost(post, this.props.history);
         } else {
@@ -56,7 +57,7 @@ class NewPost extends Component {
         }
     }
 
-    renderCoverUrlError = () => {
+    rendercoverUrlError = () => {
         if (this.state.coverUrlFail) {
             console.log('failed');
             return (<div className="error-message">Invalid cover image URL!</div>);
@@ -80,8 +81,8 @@ class NewPost extends Component {
                 </div>
                 <div className="edit-field">
                     <div className="edit-label">Cover Url</div>
-                    <TextareaAutosize onChange={this.onCoverURLChange} placeholder="cover URL" value={this.state.coverURL} />
-                    {this.renderCoverUrlError()}
+                    <TextareaAutosize onChange={this.oncoverUrlChange} placeholder="cover URL" value={this.state.coverUrl} />
+                    {this.rendercoverUrlError()}
                 </div>
                 <div className="edit-field">
                     <div className="edit-label">Content</div>

@@ -45,12 +45,10 @@ class Post extends Component {
     handleUpdatePost = () => {
         if (imageUrlWorks(this.state.currentCoverUrl) || this.state.currentCoverUrl === '' || this.state.currentCoverUrl === undefined) {
             this.setState({ coverUrlFail: false });
-            console.log('current tags');
-            console.log(this.state.currentTags);
+            console.log('current coverUrl');
+            console.log(this.state.coverUrl);
             let tags = this.state.currentTags;
             tags = tags.split(',');
-            console.log('tags');
-            console.log(tags);
             // eslint-disable-next-line no-plusplus
             for (let i = 0; i < tags.length; i++) {
                 tags[i] = tags[i].trim();

@@ -30,6 +30,7 @@ class Posts extends Component {
         );
     }
 
+    // eslint-disable-next-line consistent-return
     render() {
         console.log('posts (in render for posts)');
         console.log(this.props.posts);
@@ -45,16 +46,16 @@ class Posts extends Component {
                         {posts}
                     </div>
                 );
-            } else {
-                return (
-                    <div id="posts" className="center-me">
-                        {this.renderEmptyState()}
-                    </div>
-                );
             }
+        } else if (this.props.posts.length <= 0) {
+            return (
+                <div id="posts">
+                    {this.renderEmptyState()}
+                </div>
+            );
         } else {
             return (
-                <div>
+                <div id="posts">
                     <Loading />
                 </div>
             );
