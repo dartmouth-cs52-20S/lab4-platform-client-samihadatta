@@ -45,22 +45,22 @@ class Post extends Component {
             currentCoverUrl: this.props.currentPost.coverUrl,
             addingComment: false,
         }));
-        console.log(this.props.currentPost.tags);
+        // console.log(this.props.currentPost.tags);
     }
 
     handleUpdatePost = () => {
         if (imageUrlWorks(this.state.currentCoverUrl) || this.state.currentCoverUrl === '' || this.state.currentCoverUrl === undefined) {
             this.setState({ coverUrlFail: false });
-            console.log('current coverUrl');
-            console.log(this.state.coverUrl);
+            // console.log('current coverUrl');
+            // console.log(this.state.coverUrl);
             let tags = this.state.currentTags;
             tags = tags.split(',');
             // eslint-disable-next-line no-plusplus
             for (let i = 0; i < tags.length; i++) {
                 tags[i] = tags[i].trim();
             }
-            console.log('trimmed tags');
-            console.log(tags);
+            // console.log('trimmed tags');
+            // console.log(tags);
             const post = {
                 title: this.state.currentTitle,
                 tags,
@@ -71,8 +71,8 @@ class Post extends Component {
             };
 
             this.props.updatePost(post, () => this.setState({ isEditing: false }));
-            console.log('trying to fix');
-            console.log(this.props.currentPost);
+            // console.log('trying to fix');
+            // console.log(this.props.currentPost);
         } else {
             this.setState({ coverUrlFail: true });
         }
@@ -111,7 +111,7 @@ class Post extends Component {
     }
 
     handleAddComment = () => {
-        console.log('in handleAddComment');
+        // console.log('in handleAddComment');
         this.setState({ addingComment: true });
     }
 
@@ -131,7 +131,7 @@ class Post extends Component {
     }
 
     renderCoverUrlError = () => {
-        console.log(this.state.coverUrl);
+        // console.log(this.state.coverUrl);
         if (this.state.coverUrlFail) {
             return (<div className="error-message">Invalid cover image URL!</div>);
         } else {
@@ -140,9 +140,9 @@ class Post extends Component {
     }
 
     renderShow = () => {
-        console.log('currentPost in render');
-        console.log(this.props.currentPost);
-        console.log(this.props.currentPost.tags);
+        // console.log('currentPost in render');
+        // console.log(this.props.currentPost);
+        // console.log(this.props.currentPost.tags);
         const tagsString = this.props.currentPost.tags.join(',');
         return (
             <div className="post">
@@ -166,10 +166,10 @@ class Post extends Component {
 
     renderEditing = () => {
         // const tags = this.state.currentTags.join(',');
-        // console.log('tags views');
-        console.log(this.state.currentTags);
-        console.log('current cover url');
-        console.log(this.state.currentCoverUrl);
+        // // console.log('tags views');
+        // console.log(this.state.currentTags);
+        // console.log('current cover url');
+        // console.log(this.state.currentCoverUrl);
         return (
             <div className="post post-edit">
                 <div className="post-icons">
@@ -206,7 +206,7 @@ class Post extends Component {
     }
 
     renderNewComment = () => {
-        console.log('rendering new comment ay');
+        // console.log('rendering new comment ay');
         if (this.state.addingComment) {
             const comment = { content: '', postId: this.props.currentPost._id };
             return (
@@ -218,11 +218,11 @@ class Post extends Component {
     }
 
     renderComments = () => {
-        console.log('rendering comments woooo');
+        // console.log('rendering comments woooo');
         // this.props.fetchComments(this.props.currentPost._id);
         if (this.props.currentComments !== undefined) {
-            console.log('currentComments');
-            console.log(this.props.currentComments);
+            // console.log('currentComments');
+            // console.log(this.props.currentComments);
             const comments = this.props.currentComments.map((comment) => {
                 return <Comment comment={comment} key={comment._id} />;
             });
@@ -260,8 +260,8 @@ class Post extends Component {
     }
 
     render() {
-        console.log('in render');
-        console.log(Object.keys(this.props.currentPost).length);
+        // console.log('in render');
+        // console.log(Object.keys(this.props.currentPost).length);
         if (this.props.currentPost === undefined || Object.keys(this.props.currentPost).length <= 0 || this.props.currentPost === {}) {
             return (
                 <div>
@@ -277,7 +277,7 @@ class Post extends Component {
                 </div>
             );
         } else {
-            console.log('we in here');
+            // console.log('we in here');
             return (
                 <div>
                     <ErrorModal appElement={document.getElementById('post')} />

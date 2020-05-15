@@ -8,6 +8,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import PostThumbnail from './post-thumbnail';
 import { fetchPosts } from '../actions';
 import Loading from './loading';
+import SearchBar from './searchbar';
 
 class Posts extends Component {
     // on component did mount, call fetchPosts
@@ -43,6 +44,7 @@ class Posts extends Component {
                 return (
                     <div id="posts">
                         <div className="header">Posts</div>
+                        <SearchBar />
                         {posts}
                     </div>
                 );

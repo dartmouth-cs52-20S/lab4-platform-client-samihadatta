@@ -23,6 +23,7 @@ export const ActionTypes = {
     UPDATE_COMMENT: 'UPDATE_COMMENT',
     DELETE_COMMENT: 'DELETE_COMMENT',
     DELETE_COMMENTS: 'DELETE_COMMENTS',
+    SEARCH_FILTER: 'SEARCH_FILTER',
 };
 
 
@@ -32,13 +33,13 @@ export function fetchPosts() {
     // ActionCreator returns a function
     // that gets called with dispatch
     // remember (arg) => { } is a function
-    console.log('in fetchposts');
+    // console.log('in fetchposts');
     return (dispatch) => {
         axios.get(`${ROOT_URL}/posts`)
             .then((response) => {
                 // once we are done fetching we can dispatch a redux action with the response data
-                console.log('response');
-                console.log(response);
+                // console.log('response');
+                // console.log(response);
                 dispatch({ type: ActionTypes.FETCH_POSTS, payload: response.data });
             })
             .catch((error) => {
@@ -47,8 +48,8 @@ export function fetchPosts() {
                 // have an error component somewhere show it
                 dispatch({ type: ActionTypes.ERROR_SET, error });
                 // might you also want an ERROR_CLEAR action?
-                console.log('error');
-                console.log(error);
+                // console.log('error');
+                // console.log(error);
             });
     };
 }
@@ -62,13 +63,13 @@ export function createPost(post, history) {
             .then((response) => {
                 dispatch({ type: ActionTypes.CREATE_POST, payload: response.data });
                 history.push('/');
-                console.log('response');
-                console.log(response);
+                // console.log('response');
+                // console.log(response);
             })
             .catch((error) => {
                 dispatch({ type: ActionTypes.ERROR_SET, error });
-                console.log('error');
-                console.log(error);
+                // console.log('error');
+                // console.log(error);
             });
     };
 }
@@ -81,13 +82,13 @@ export function updatePost(post, callback) {
             .then((response) => {
                 dispatch({ type: ActionTypes.UPDATE_POST, payload: response.data });
                 callback();
-                console.log('response');
-                console.log(response);
+                // console.log('response');
+                // console.log(response);
             })
             .catch((error) => {
                 // dispatch({ type: ActionTypes.ERROR_SET, error });
-                console.log('error');
-                console.log(error);
+                // console.log('error');
+                // console.log(error);
             });
     };
 }
@@ -105,12 +106,12 @@ export function fetchPost(id) {
                     dispatch({ type: ActionTypes.ERROR_SET, payload: response.data.message });
                 }
                 // dispatch({ type: ActionTypes.FETCH_POST, payload: response.data });
-                // console.log('response');
-                // console.log(response);
+                // //console.log('response');
+                // //console.log(response);
             })
             .catch((error) => {
-                console.log('error');
-                console.log(error);
+                // console.log('error');
+                // console.log(error);
             });
     };
 }
@@ -121,29 +122,29 @@ export function deletePost(id, history) {
         axios.delete(`${ROOT_URL}/posts/${id}`)
             .then((response) => {
                 dispatch({ type: ActionTypes.DELETE_POST, payload: response.data });
-                console.log('response');
-                console.log(response);
+                // console.log('response');
+                // console.log(response);
                 axios.delete(`${ROOT_URL}/comments/post=${id}`)
                     .then((result) => {
                         // dispatch({ type: ActionTypes.DELETE_COMMENT, payload: response.data });
-                        console.log('response');
-                        console.log(result);
+                        // console.log('response');
+                        // console.log(result);
                         history.push('/');
                     })
                     .catch((error) => {
-                        console.log('error');
-                        console.log(error);
+                        // console.log('error');
+                        // console.log(error);
                     });
             })
             .catch((error) => {
-                console.log('error');
-                console.log(error);
+                // console.log('error');
+                // console.log(error);
             });
     };
 }
 
 export function errorClear() {
-    console.log('in error clear');
+    // console.log('in error clear');
     return (dispatch) => {
         dispatch({ type: ActionTypes.ERROR_CLEAR, payload: '' });
     };
@@ -166,8 +167,8 @@ export function fetchComments(postId) {
         axios.get(`${ROOT_URL}/comments/post=${postId}`)
             .then((response) => {
                 // once we are done fetching we can dispatch a redux action with the response data
-                console.log('fetch comments response');
-                console.log(response);
+                // console.log('fetch comments response');
+                // console.log(response);
                 dispatch({ type: ActionTypes.FETCH_COMMENTS, payload: response.data });
             })
             .catch((error) => {
@@ -176,8 +177,8 @@ export function fetchComments(postId) {
                 // have an error component somewhere show it
                 dispatch({ type: ActionTypes.ERROR_SET, error });
                 // might you also want an ERROR_CLEAR action?
-                console.log('error');
-                console.log(error);
+                // console.log('error');
+                // console.log(error);
             });
     };
 }
@@ -194,31 +195,31 @@ export function fetchComments(postId) {
 //                     dispatch({ type: ActionTypes.ERROR_SET, payload: response.data.message });
 //                 }
 //                 // dispatch({ type: ActionTypes.FETCH_POST, payload: response.data });
-//                 // console.log('response');
-//                 // console.log(response);
+//                 // //console.log('response');
+//                 // //console.log(response);
 //             })
 //             .catch((error) => {
-//                 console.log('error');
-//                 console.log(error);
+//                 //console.log('error');
+//                 //console.log(error);
 //             });
 //     };
 // }
 
 export function addComment(postId, comment) {
-    console.log('in actions addComment');
-    console.log(comment);
+    // console.log('in actions addComment');
+    // console.log(comment);
     return (dispatch) => {
         axios.post(`${ROOT_URL}/comments/post=${postId}`, comment)
             .then((result) => {
-                console.log('add comment response');
-                console.log(result);
+                // console.log('add comment response');
+                // console.log(result);
                 // dispatch({ type: ActionTypes.FETCH_COMMETS, payload: response.data });
                 // fetchComments(postId);
                 axios.get(`${ROOT_URL}/comments/post=${postId}`)
                     .then((response) => {
                         // once we are done fetching we can dispatch a redux action with the response data
-                        console.log('fetch comments response');
-                        console.log(response);
+                        // console.log('fetch comments response');
+                        // console.log(response);
                         dispatch({ type: ActionTypes.FETCH_COMMENTS, payload: response.data });
                     })
                     .catch((error) => {
@@ -227,35 +228,35 @@ export function addComment(postId, comment) {
                         // have an error component somewhere show it
                         dispatch({ type: ActionTypes.ERROR_SET, error });
                         // might you also want an ERROR_CLEAR action?
-                        console.log('error');
-                        console.log(error);
+                        // console.log('error');
+                        // console.log(error);
                     });
             })
             .catch((error) => {
                 dispatch({ type: ActionTypes.ERROR_SET, error });
-                console.log('error');
-                console.log(error);
+                // console.log('error');
+                // console.log(error);
             });
     };
 }
 
 export function updateComment(commentId, comment, callback) {
-    console.log('commentId');
-    console.log(commentId);
-    console.log('comment');
-    console.log(comment);
+    // console.log('commentId');
+    // console.log(commentId);
+    // console.log('comment');
+    // console.log(comment);
     return (dispatch) => {
         axios.put(`${ROOT_URL}/comments/comment=${commentId}`, comment)
             .then((result) => {
                 // dispatch({ type: ActionTypes.UPDATE_COMMENT, payload: response.data });
                 callback();
-                console.log('response');
-                console.log(result);
+                // console.log('response');
+                // console.log(result);
                 axios.get(`${ROOT_URL}/comments/post=${comment.postId}`)
                     .then((response) => {
                         // once we are done fetching we can dispatch a redux action with the response data
-                        console.log('fetch comments response');
-                        console.log(response);
+                        // console.log('fetch comments response');
+                        // console.log(response);
                         dispatch({ type: ActionTypes.FETCH_COMMENTS, payload: response.data });
                     })
                     .catch((error) => {
@@ -264,14 +265,14 @@ export function updateComment(commentId, comment, callback) {
                         // have an error component somewhere show it
                         dispatch({ type: ActionTypes.ERROR_SET, error });
                         // might you also want an ERROR_CLEAR action?
-                        console.log('error');
-                        console.log(error);
+                        // console.log('error');
+                        // console.log(error);
                     });
             })
             .catch((error) => {
                 // dispatch({ type: ActionTypes.ERROR_SET, error });
-                console.log('error');
-                console.log(error);
+                // console.log('error');
+                // console.log(error);
             });
     };
 }
@@ -281,13 +282,13 @@ export function deleteComment(commentId, comment) {
         axios.delete(`${ROOT_URL}/comments/comment=${commentId}`)
             .then((result) => {
                 // dispatch({ type: ActionTypes.DELETE_COMMENT, payload: response.data });
-                console.log('response');
-                console.log(result);
+                // console.log('response');
+                // console.log(result);
                 axios.get(`${ROOT_URL}/comments/post=${comment.postId}`)
                     .then((response) => {
                         // once we are done fetching we can dispatch a redux action with the response data
-                        console.log('fetch comments response');
-                        console.log(response);
+                        // console.log('fetch comments response');
+                        // console.log(response);
                         dispatch({ type: ActionTypes.FETCH_COMMENTS, payload: response.data });
                     })
                     .catch((error) => {
@@ -296,13 +297,13 @@ export function deleteComment(commentId, comment) {
                         // have an error component somewhere show it
                         dispatch({ type: ActionTypes.ERROR_SET, error });
                         // might you also want an ERROR_CLEAR action?
-                        console.log('error');
-                        console.log(error);
+                        // console.log('error');
+                        // console.log(error);
                     });
             })
             .catch((error) => {
-                console.log('error');
-                console.log(error);
+                // console.log('error');
+                // console.log(error);
             });
     };
 }
@@ -312,8 +313,21 @@ export function deleteComments(postId) {
         axios.delete(`${ROOT_URL}/comments/post=${postId}`)
             .then((response) => {
                 dispatch({ type: ActionTypes.DELETE_COMMENT, payload: response.data });
-                console.log('response');
-                console.log(response);
+                // console.log('response');
+                // console.log(response);
+            })
+            .catch((error) => {
+                // console.log('error');
+                // console.log(error);
+            });
+    };
+}
+
+export function search(request) {
+    return (dispatch) => {
+        axios.get(`${ROOT_URL}/search/posts/${request}`)
+            .then((response) => {
+                dispatch({ type: ActionTypes.SEARCH_FILTER, payload: response.data });
             })
             .catch((error) => {
                 console.log('error');

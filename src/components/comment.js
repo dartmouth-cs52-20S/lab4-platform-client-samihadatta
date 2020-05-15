@@ -15,8 +15,8 @@ import {
 class Comment extends Component {
     constructor(props) {
         super(props);
-        console.log('props from comment constructor');
-        console.log(props);
+        // console.log('props from comment constructor');
+        // console.log(props);
         this.state = {
             isEditing: false,
             currentContent: '',
@@ -34,25 +34,25 @@ class Comment extends Component {
             isEditing: true,
             currentContent: this.props.comment.content,
         }));
-        console.log(this.props.comment.tags);
+        // console.log(this.props.comment.tags);
     }
 
     createComment = () => {
-        console.log('creating comment!');
+        // console.log('creating comment!');
         const comment = { postId: this.props.comment.postId, content: this.state.currentContent };
-        console.log(comment);
+        // console.log(comment);
         this.props.addComment(comment.postId, comment);
         this.props.newCallback();
     }
 
     handleUpdateComment = () => {
-        console.log('updating content?');
+        // console.log('updating content?');
         if (this.props.newCallback !== undefined) {
-            console.log(this.props.newCallback);
-            console.log('is new');
+            // console.log(this.props.newCallback);
+            // console.log('is new');
             this.createComment();
         } else {
-            console.log('yuh');
+            // console.log('yuh');
             this.props.updateComment(this.props.comment._id,
                 { _id: this.props.comment._id, content: this.state.currentContent, postId: this.props.comment.postId },
                 () => this.setState({ isEditing: false }));
@@ -81,7 +81,7 @@ class Comment extends Component {
     }
 
     renderShow = () => {
-        console.log('comment in render');
+        // console.log('comment in render');
         return (
             <div className="comment">
                 <div className="comment-icons">
@@ -115,10 +115,10 @@ class Comment extends Component {
     }
 
     render() {
-        console.log('in render for comments');
-        console.log(this.props);
-        console.log(this.props.comment);
-        console.log(Object.keys(this.props.comment).length);
+        // console.log('in render for comments');
+        // console.log(this.props);
+        // console.log(this.props.comment);
+        // console.log(Object.keys(this.props.comment).length);
         if (this.props.comment === undefined || Object.keys(this.props.comment).length <= 0 || this.props.currentPost === {}) {
             return (
                 <div>
