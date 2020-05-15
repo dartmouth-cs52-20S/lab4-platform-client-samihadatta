@@ -121,9 +121,19 @@ export function deletePost(id, history) {
         axios.delete(`${ROOT_URL}/posts/${id}`)
             .then((response) => {
                 dispatch({ type: ActionTypes.DELETE_POST, payload: response.data });
-                history.push('/');
                 console.log('response');
                 console.log(response);
+                axios.delete(`${ROOT_URL}/comments/post=${id}`)
+                    .then((result) => {
+                        // dispatch({ type: ActionTypes.DELETE_COMMENT, payload: response.data });
+                        console.log('response');
+                        console.log(result);
+                        history.push('/');
+                    })
+                    .catch((error) => {
+                        console.log('error');
+                        console.log(error);
+                    });
             })
             .catch((error) => {
                 console.log('error');
