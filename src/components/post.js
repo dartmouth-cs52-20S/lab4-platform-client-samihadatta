@@ -6,13 +6,16 @@ import { NavLink } from 'react-router-dom';
 import TextareaAutosize from 'react-textarea-autosize';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faChevronLeft, faEdit, faTimes, faCheck, faTrash,
+    faChevronLeft, faEdit, faTimes, faCheck, faTrash, faPlusSquare,
 } from '@fortawesome/free-solid-svg-icons';
 import marked from 'marked';
-import { fetchPost, deletePost, updatePost } from '../actions';
+import {
+    fetchPost, deletePost, updatePost, fetchComments,
+} from '../actions';
 import { imageUrlWorks } from './lib';
 import ErrorModal from './error';
 import Loading from './loading';
+import Comment from './comment';
 
 class Post extends Component {
     constructor(props) {
@@ -23,12 +26,14 @@ class Post extends Component {
             currentTags: '',
             currentContent: '',
             currentCoverUrl: '',
+            addingComment: false,
             coverUrlFail: false,
         };
     }
 
     componentDidMount() {
         this.props.fetchPost(this.props.match.params.postID);
+        this.props.fetchComments(this.props.match.params.postID);
     }
 
     startEditing = () => {
@@ -38,6 +43,7 @@ class Post extends Component {
             currentTags: this.props.currentPost.tags.join(','),
             currentContent: this.props.currentPost.content,
             currentCoverUrl: this.props.currentPost.coverUrl,
+            addingComment: false,
         }));
         console.log(this.props.currentPost.tags);
     }
@@ -104,6 +110,15 @@ class Post extends Component {
         this.props.deletePost(this.props.currentPost._id, this.props.history);
     }
 
+    handleAddComment = () => {
+        console.log('in handleAddComment');
+        this.setState({ addingComment: true });
+    }
+
+    handleAddedComment = () => {
+        this.setState({ addingComment: false });
+    }
+
     renderCoverImage = () => {
         if (imageUrlWorks(this.props.currentPost.coverUrl)) {
             return (
@@ -144,6 +159,7 @@ class Post extends Component {
                     {this.renderCoverImage()}
                     <div className="post-content" dangerouslySetInnerHTML={{ __html: marked(this.props.currentPost.content || '') }} />
                 </div>
+                {this.renderComments()}
             </div>
         );
     }
@@ -189,6 +205,60 @@ class Post extends Component {
         );
     }
 
+    renderNewComment = () => {
+        console.log('rendering new comment ay');
+        if (this.state.addingComment) {
+            const comment = { content: '', postId: this.props.currentPost._id };
+            return (
+                <Comment comment={comment} key={comment._id} isNew="new" newCallback={this.handleAddedComment} />
+            );
+        } else {
+            return <div />;
+        }
+    }
+
+    renderComments = () => {
+        console.log('rendering comments woooo');
+        // this.props.fetchComments(this.props.currentPost._id);
+        if (this.props.currentComments !== undefined) {
+            console.log('currentComments');
+            console.log(this.props.currentComments);
+            const comments = this.props.currentComments.map((comment) => {
+                return <Comment comment={comment} key={comment._id} />;
+            });
+            return (
+                <div id="comments">
+                    <div className="comment-header">Comments</div>
+                    <FontAwesomeIcon icon={faPlusSquare} className="icon" onClick={this.handleAddComment} />
+                    <div className="comments-info">
+                        {comments}
+                        {this.renderNewComment()}
+                    </div>
+                </div>
+            );
+        } else if (this.state.addingComment === true) {
+            return (
+                <div id="comments">
+                    <div className="comment-header">Comments</div>
+                    <FontAwesomeIcon icon={faPlusSquare} className="icon" onClick={this.handleAddComment} />
+                    <div className="comments-info">
+                        {this.renderNewComment()}
+                    </div>
+                </div>
+            );
+        } else {
+            return (
+                <div id="comments">
+                    <div className="comment-header">Comments</div>
+                    <FontAwesomeIcon icon={faPlusSquare} className="icon" onClick={this.handleAddComment} />
+                    <div className="empty-comments-state">
+                        No comments yet!
+                    </div>
+                </div>
+            );
+        }
+    }
+
     render() {
         console.log('in render');
         console.log(Object.keys(this.props.currentPost).length);
@@ -221,7 +291,10 @@ class Post extends Component {
 const mapStateToProps = (reduxState) => {
     return {
         currentPost: reduxState.posts.current,
+        currentComments: reduxState.comments.currentComments,
     };
 };
 
-export default connect(mapStateToProps, { fetchPost, deletePost, updatePost })(Post);
+export default connect(mapStateToProps, {
+    fetchPost, deletePost, updatePost, fetchComments,
+})(Post);

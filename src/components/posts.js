@@ -42,7 +42,7 @@ class Posts extends Component {
             if (posts.length > 0) {
                 return (
                     <div id="posts">
-                        <div className="header"> Posts</div>
+                        <div className="header">Posts</div>
                         {posts}
                     </div>
                 );

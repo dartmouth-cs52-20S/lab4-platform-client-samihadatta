@@ -17,13 +17,16 @@ export const ActionTypes = {
     SELECT_POST: 'SELECT_POST',
     ERROR_SET: 'ERROR_SET',
     ERROR_CLEAR: 'ERROR_CLEAR',
-    // FETCH_COMMENTS: 'FETCH_COMMENTS',
-    // FETCH_COMMENT: 'FETCH_COMMENT',
-    // ADD_COMMENT: 'ADD_COMMENT',
-    // UPDATE_COMMENT: 'UPDATE_COMMENT',
-    // DELETE_COMMENT: 'DELETE_COMMENT',
+    FETCH_COMMENTS: 'FETCH_COMMENTS',
+    FETCH_COMMENT: 'FETCH_COMMENT',
+    ADD_COMMENT: 'ADD_COMMENT',
+    UPDATE_COMMENT: 'UPDATE_COMMENT',
+    DELETE_COMMENT: 'DELETE_COMMENT',
+    DELETE_COMMENTS: 'DELETE_COMMENTS',
 };
 
+
+// FUNCTIONS FOR POSTS
 
 export function fetchPosts() {
     // ActionCreator returns a function
@@ -133,5 +136,178 @@ export function errorClear() {
     console.log('in error clear');
     return (dispatch) => {
         dispatch({ type: ActionTypes.ERROR_CLEAR, payload: '' });
+    };
+}
+
+
+// FUNCTIONS FOR COMMENTS
+
+/*
+FETCH_COMMENTS: 'FETCH_COMMENTS',
+    FETCH_COMMENT: 'FETCH_COMMENT',
+    ADD_COMMENT: 'ADD_COMMENT',
+    UPDATE_COMMENT: 'UPDATE_COMMENT',
+    DELETE_COMMENT: 'DELETE_COMMENT',
+    DELETE_COMMENTS: 'DELETE_COMMENTS',
+*/
+
+export function fetchComments(postId) {
+    return (dispatch) => {
+        axios.get(`${ROOT_URL}/comments/post=${postId}`)
+            .then((response) => {
+                // once we are done fetching we can dispatch a redux action with the response data
+                console.log('fetch comments response');
+                console.log(response);
+                dispatch({ type: ActionTypes.FETCH_COMMENTS, payload: response.data });
+            })
+            .catch((error) => {
+                // whaaat?
+                // dispatch an error, use it in a separate error reducer. this is the beauty of redux.
+                // have an error component somewhere show it
+                dispatch({ type: ActionTypes.ERROR_SET, error });
+                // might you also want an ERROR_CLEAR action?
+                console.log('error');
+                console.log(error);
+            });
+    };
+}
+
+// export function fetchComment(commentId) {
+//     return (dispatch) => {
+//         axios.get(`${ROOT_URL}/comments/comment=${commentId}`)
+//             .then((response) => {
+//                 if (!('message' in response.data)) {
+//                     dispatch({ type: ActionTypes.FETCH_COMMENT, payload: response.data });
+//                     dispatch({ type: ActionTypes.ERROR_CLEAR, payload: '' });
+//                 } else {
+//                     // errorSet(response.data.message);
+//                     dispatch({ type: ActionTypes.ERROR_SET, payload: response.data.message });
+//                 }
+//                 // dispatch({ type: ActionTypes.FETCH_POST, payload: response.data });
+//                 // console.log('response');
+//                 // console.log(response);
+//             })
+//             .catch((error) => {
+//                 console.log('error');
+//                 console.log(error);
+//             });
+//     };
+// }
+
+export function addComment(postId, comment) {
+    console.log('in actions addComment');
+    console.log(comment);
+    return (dispatch) => {
+        axios.post(`${ROOT_URL}/comments/post=${postId}`, comment)
+            .then((result) => {
+                console.log('add comment response');
+                console.log(result);
+                // dispatch({ type: ActionTypes.FETCH_COMMETS, payload: response.data });
+                // fetchComments(postId);
+                axios.get(`${ROOT_URL}/comments/post=${postId}`)
+                    .then((response) => {
+                        // once we are done fetching we can dispatch a redux action with the response data
+                        console.log('fetch comments response');
+                        console.log(response);
+                        dispatch({ type: ActionTypes.FETCH_COMMENTS, payload: response.data });
+                    })
+                    .catch((error) => {
+                        // whaaat?
+                        // dispatch an error, use it in a separate error reducer. this is the beauty of redux.
+                        // have an error component somewhere show it
+                        dispatch({ type: ActionTypes.ERROR_SET, error });
+                        // might you also want an ERROR_CLEAR action?
+                        console.log('error');
+                        console.log(error);
+                    });
+            })
+            .catch((error) => {
+                dispatch({ type: ActionTypes.ERROR_SET, error });
+                console.log('error');
+                console.log(error);
+            });
+    };
+}
+
+export function updateComment(commentId, comment, callback) {
+    console.log('commentId');
+    console.log(commentId);
+    console.log('comment');
+    console.log(comment);
+    return (dispatch) => {
+        axios.put(`${ROOT_URL}/comments/comment=${commentId}`, comment)
+            .then((result) => {
+                // dispatch({ type: ActionTypes.UPDATE_COMMENT, payload: response.data });
+                callback();
+                console.log('response');
+                console.log(result);
+                axios.get(`${ROOT_URL}/comments/post=${comment.postId}`)
+                    .then((response) => {
+                        // once we are done fetching we can dispatch a redux action with the response data
+                        console.log('fetch comments response');
+                        console.log(response);
+                        dispatch({ type: ActionTypes.FETCH_COMMENTS, payload: response.data });
+                    })
+                    .catch((error) => {
+                        // whaaat?
+                        // dispatch an error, use it in a separate error reducer. this is the beauty of redux.
+                        // have an error component somewhere show it
+                        dispatch({ type: ActionTypes.ERROR_SET, error });
+                        // might you also want an ERROR_CLEAR action?
+                        console.log('error');
+                        console.log(error);
+                    });
+            })
+            .catch((error) => {
+                // dispatch({ type: ActionTypes.ERROR_SET, error });
+                console.log('error');
+                console.log(error);
+            });
+    };
+}
+
+export function deleteComment(commentId, comment) {
+    return (dispatch) => {
+        axios.delete(`${ROOT_URL}/comments/comment=${commentId}`)
+            .then((result) => {
+                // dispatch({ type: ActionTypes.DELETE_COMMENT, payload: response.data });
+                console.log('response');
+                console.log(result);
+                axios.get(`${ROOT_URL}/comments/post=${comment.postId}`)
+                    .then((response) => {
+                        // once we are done fetching we can dispatch a redux action with the response data
+                        console.log('fetch comments response');
+                        console.log(response);
+                        dispatch({ type: ActionTypes.FETCH_COMMENTS, payload: response.data });
+                    })
+                    .catch((error) => {
+                        // whaaat?
+                        // dispatch an error, use it in a separate error reducer. this is the beauty of redux.
+                        // have an error component somewhere show it
+                        dispatch({ type: ActionTypes.ERROR_SET, error });
+                        // might you also want an ERROR_CLEAR action?
+                        console.log('error');
+                        console.log(error);
+                    });
+            })
+            .catch((error) => {
+                console.log('error');
+                console.log(error);
+            });
+    };
+}
+
+export function deleteComments(postId) {
+    return (dispatch) => {
+        axios.delete(`${ROOT_URL}/comments/post=${postId}`)
+            .then((response) => {
+                dispatch({ type: ActionTypes.DELETE_COMMENT, payload: response.data });
+                console.log('response');
+                console.log(response);
+            })
+            .catch((error) => {
+                console.log('error');
+                console.log(error);
+            });
     };
 }

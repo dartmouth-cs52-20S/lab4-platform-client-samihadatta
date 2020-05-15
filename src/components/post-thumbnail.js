@@ -13,12 +13,13 @@ const PostThumbnail = (props) => {
             return <div />;
         }
     };
+    const tags = props.post.tags.join(', ');
     return (
         // eslint-disable-next-line jsx-a11y/no-static-element-interactions
         <div className="thumbnail" onClick={() => props.fetchPost(props.post._id)}>
             {renderImage()}
             <div className="thumbnailTitle">{props.post.title}</div>
-            <div className="thumbnailTags">{props.post.tags}</div>
+            <div className="thumbnailTags">{tags}</div>
         </div>
     );
 };
