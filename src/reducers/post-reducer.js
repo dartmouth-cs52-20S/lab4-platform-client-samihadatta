@@ -3,6 +3,7 @@ import { ActionTypes } from '../actions';
 const initialState = {
     all: [],
     current: {},
+    searched: [],
 };
 
 const PostReducer = (state = initialState, action) => {
@@ -14,7 +15,7 @@ const PostReducer = (state = initialState, action) => {
     case ActionTypes.FETCH_POST:
         return { ...state, current: action.payload };
     case ActionTypes.SEARCH_FILTER:
-        return { ...state, all: action.payload };
+        return { ...state, searched: action.payload };
     default:
         return state;
     }

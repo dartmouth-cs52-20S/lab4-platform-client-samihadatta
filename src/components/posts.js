@@ -11,9 +11,24 @@ import Loading from './loading';
 import SearchBar from './searchbar';
 
 class Posts extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            searched: false,
+        };
+    }
+
     // on component did mount, call fetchPosts
     componentDidMount() {
         this.props.fetchPosts();
+    }
+
+    searched = () => {
+        this.setState({ searched: true });
+    }
+
+    returned = () => {
+        this.setState({ searched: false });
     }
 
     renderEmptyState = () => {
@@ -35,7 +50,7 @@ class Posts extends Component {
     render() {
         console.log('posts (in render for posts)');
         console.log(this.props.posts);
-        if (this.props.posts !== undefined && this.props.posts.length > 0) {
+        if (this.props.posts !== undefined && this.props.posts.length > 0 && this.state.searched === false) {
             console.log('first if');
             const posts = this.props.posts.map((post) => {
                 return <NavLink className=".thumbnail-wrapper" to={`/posts/${post._id}`} key={post._id}><PostThumbnail key={post._id} post={post} /></NavLink>;
@@ -43,8 +58,35 @@ class Posts extends Component {
             if (posts.length > 0) {
                 return (
                     <div id="posts">
-                        <div className="header">Posts</div>
-                        <SearchBar />
+                        <div className="top">
+                            <div className="header">Posts</div>
+                            <SearchBar onSearch={this.searched} onReturn={this.returned} />
+                        </div>
+                        {posts}
+                    </div>
+                );
+            }
+        } else if (this.props.searchResults !== undefined && this.state.searched) {
+            if (this.props.searchResults.length <= 0) {
+                return (
+                    <div id="posts">
+                        <div className="top">
+                            <div className="header">Posts</div>
+                            <SearchBar onSearch={this.searched} onReturn={this.returned} />
+                        </div>
+                        <div className="search-empty">No posts matched your query</div>
+                    </div>
+                );
+            } else {
+                const posts = this.props.searchResults.map((post) => {
+                    return <NavLink className=".thumbnail-wrapper" to={`/posts/${post._id}`} key={post._id}><PostThumbnail key={post._id} post={post} /></NavLink>;
+                });
+                return (
+                    <div id="posts">
+                        <div className="top">
+                            <div className="header">Posts</div>
+                            <SearchBar onSearch={this.searched} onReturn={this.returned} />
+                        </div>
                         {posts}
                     </div>
                 );
@@ -67,6 +109,7 @@ class Posts extends Component {
 
 const mapStateToProps = (reduxState) => ({
     posts: reduxState.posts.all,
+    searchResults: reduxState.posts.searched,
 });
 
 export default connect(mapStateToProps, { fetchPosts })(Posts);

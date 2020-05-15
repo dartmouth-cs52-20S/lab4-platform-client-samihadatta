@@ -2,6 +2,7 @@ $textcolor:#032028;
 $tagcolor: #7B939A;
 $iconcolor: #09B3E9;//#10A8FE;
 $bluewhite:#EFF2FE;
+$textareabg: rgba(239, 242, 254, 0.8);
 // $buttonbg: 
 
 body, html {
@@ -303,4 +304,33 @@ body, html {
 .error-message {
     color: #10A8FE;
     font-size: small;
+}
+
+.top {
+    width: 90%;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.search {
+    padding: 0.2rem;
+    border-radius: 0.1rem;
+    background-color: white;
+    .icon {
+        margin-left: 0.38rem;
+    }
+}
+
+.search-empty {
+    width: 100%;
+    text-align: center;
+    color: $textcolor;
+    align-self: center;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    margin: 0;
 }
