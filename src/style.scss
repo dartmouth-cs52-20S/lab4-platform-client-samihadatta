@@ -82,9 +82,14 @@ body, html {
             color: $textcolor;
             margin-top: 0.2rem;
             margin-bottom: 0.2rem;
+            font-size: large;
+        }
+        .thumbnailAuthor {
+            font-size: medium;
         }
         .thumbnailTags {
             color: $tagcolor;
+            font-size: medium;
         }
         img {
             width: 100%;

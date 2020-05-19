@@ -3,9 +3,9 @@
 
 import axios from 'axios';
 
-// const ROOT_URL = 'https://samihadatta-cs52-blog.herokuapp.com/api';
+const ROOT_URL = 'https://samihadatta-cs52-blog.herokuapp.com/api';
 // const ROOT_URL = 'https://samihadatta-cs52-blog-v2.herokuapp.com/api';
-const ROOT_URL = 'http://localhost:9090/api';
+// const ROOT_URL = 'http://localhost:9090/api';
 // const ROOT_URL = 'https://platform.cs52.me/api';
 // const API_KEY = '?key=s_datta';
 
@@ -341,7 +341,7 @@ export function search(request) {
     };
 }
 
-export function signinUser({ username, email, password }, history) {
+export function signinUser(userInfo, history) {
     // takes in an object with email and password (minimal user object)
     // returns a thunk method that takes dispatch as an argument (just like our create post method really)
     // does an axios.post on the /signin endpoint
@@ -349,11 +349,16 @@ export function signinUser({ username, email, password }, history) {
     //  dispatch({ type: ActionTypes.AUTH_USER });
     //  localStorage.setItem('token', response.data.token);
     // on error should dispatch(authError(`Sign In Failed: ${error.response.data}`));
+    const { username, email, password } = userInfo;
+    console.log(userInfo);
     return (dispatch) => {
         axios.post(`${ROOT_URL}/signin`, { email, password, username })
             .then((response) => {
                 localStorage.setItem('token', response.data.token);
-                dispatch({ type: ActionTypes.AUTH_USER });
+                console.log('in signin');
+                console.log(username);
+                localStorage.setItem('username', username);
+                dispatch({ type: ActionTypes.AUTH_USER, payload: username });
                 history.push('/');
             })
             .catch((error) => {
@@ -374,7 +379,8 @@ export function signupUser({ email, password, username }, history) {
         axios.post(`${ROOT_URL}/signup`, { email, password, username })
             .then((response) => {
                 localStorage.setItem('token', response.data.token);
-                dispatch({ type: ActionTypes.AUTH_USER });
+                localStorage.setItem('username', username);
+                dispatch({ type: ActionTypes.AUTH_USER, payload: username });
                 history.push('/');
             })
             .catch((error) => {
@@ -389,6 +395,7 @@ export function signupUser({ email, password, username }, history) {
 export function signoutUser(history) {
     return (dispatch) => {
         localStorage.removeItem('token');
+        localStorage.removeItem('username');
         dispatch({ type: ActionTypes.DEAUTH_USER });
         history.push('/');
     };

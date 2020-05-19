@@ -144,6 +144,25 @@ class Post extends Component {
         // console.log('currentPost in render');
         // console.log(this.props.currentPost);
         // console.log(this.props.currentPost.tags);
+        console.log('here we go');
+        console.log(this.props.username);
+        console.log(this.props.currentPost.author.username);
+        if (this.props.username === this.props.currentPost.author.username) {
+            return (
+                <div>
+                    {this.showAuthenticated()}
+                </div>
+            );
+        } else {
+            return (
+                <div>
+                    {this.showUnauthenticated()}
+                </div>
+            );
+        }
+    }
+
+    showAuthenticated = () => {
         const tagsString = this.props.currentPost.tags.join(',');
         return (
             <div className="post">
@@ -153,6 +172,25 @@ class Post extends Component {
                         <FontAwesomeIcon icon={faEdit} onClick={this.startEditing} className="icon" />
                         <FontAwesomeIcon icon={faTrash} onClick={this.handleDelete} className="icon" />
                     </div>
+                </div>
+                <div className="post-info">
+                    <div className="post-title">{this.props.currentPost.title}</div>
+                    <div>{this.props.currentPost.author.username}</div>
+                    <div className="post-tags">{tagsString}</div>
+                    {this.renderCoverImage()}
+                    <div className="post-content" dangerouslySetInnerHTML={{ __html: marked(this.props.currentPost.content || '') }} />
+                </div>
+                {this.renderComments()}
+            </div>
+        );
+    }
+
+    showUnauthenticated = () => {
+        const tagsString = this.props.currentPost.tags.join(',');
+        return (
+            <div className="post">
+                <div className="post-icons">
+                    <NavLink to="/"><FontAwesomeIcon icon={faChevronLeft} className="icon" /></NavLink>
                 </div>
                 <div className="post-info">
                     <div className="post-title">{this.props.currentPost.title}</div>
@@ -262,8 +300,9 @@ class Post extends Component {
     }
 
     render() {
-        // console.log('in render');
+        console.log('in render');
         // console.log(Object.keys(this.props.currentPost).length);
+        console.log(this.props.username);
         if (this.props.currentPost === undefined || Object.keys(this.props.currentPost).length <= 0 || this.props.currentPost === {}) {
             return (
                 <div>
@@ -294,6 +333,8 @@ const mapStateToProps = (reduxState) => {
     return {
         currentPost: reduxState.posts.current,
         currentComments: reduxState.comments.currentComments,
+        username: reduxState.auth.username,
+        authenticated: reduxState.auth.authenticated,
     };
 };
 

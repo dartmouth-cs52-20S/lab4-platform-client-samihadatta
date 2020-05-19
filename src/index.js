@@ -16,10 +16,12 @@ const store = createStore(reducers, {}, compose(
     window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : (f) => f,
 ));
 
-const token = localStorage.getItem('token'); // want it as high as possible!
-if (token) {
+const token = localStorage.getItem('token'); // want it as high in the hierarchy as possible!
+const username = localStorage.getItem('username');
+if (token && username) {
     // type: 'AUTH_USER'
-    store.dispatch({ type: ActionTypes.AUTH_USER });
+    store.dispatch({ type: ActionTypes.AUTH_USER, payload: username });
+    console.log(username);
 }
 
 // we now wrap App in a Provider

@@ -36,13 +36,25 @@ const Nav = (props) => {
         }
     };
 
+    const addButton = () => {
+        if (props.authenticated) {
+            return (
+                <div><NavLink to="/posts/new"><FontAwesomeIcon icon={faPlusCircle} className="icon" /></NavLink></div>
+            );
+        } else {
+            return (
+                <div />
+            );
+        }
+    };
+
     return (
         <nav className="navbar">
             <div className="site-title"><NavLink exact to="/"><FontAwesomeIcon icon={faFeather} className="icon" id="title" /></NavLink></div>
             <div className="nav-actions">
                 {signInOut()}
                 <div><NavLink exact to="/"><FontAwesomeIcon icon={faList} className="icon" /></NavLink></div>
-                <div><NavLink to="/posts/new"><FontAwesomeIcon icon={faPlusCircle} className="icon" /></NavLink></div>
+                {addButton()}
             </div>
         </nav>
     );

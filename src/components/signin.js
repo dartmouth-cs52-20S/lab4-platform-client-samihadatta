@@ -15,6 +15,7 @@ class SignIn extends Component {
         this.state = {
             email: '',
             password: '',
+            username: '',
         };
     }
 
@@ -34,6 +35,7 @@ class SignIn extends Component {
         const userInfo = {
             email: this.state.email,
             password: this.state.password,
+            username: this.state.username,
         };
         this.props.signinUser(userInfo, this.props.history);
     }
@@ -50,7 +52,7 @@ class SignIn extends Component {
         return (
             <div className="new-form">
                 <NavLink to="/"><FontAwesomeIcon icon={faChevronLeft} /></NavLink>
-                <div className="header">Sign In or Up!</div>
+                <div className="header">Sign In!</div>
                 <div className="edit-field">
                     <div className="edit-label">User Name</div>
                     <TextareaAutosize onChange={this.onUsernameChange} placeholder="user name" value={this.state.username} />

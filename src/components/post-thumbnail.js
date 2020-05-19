@@ -19,6 +19,7 @@ const PostThumbnail = (props) => {
         <div className="thumbnail" onClick={() => props.fetchPost(props.post._id)}>
             {renderImage()}
             <div className="thumbnailTitle">{props.post.title}</div>
+            <div className="thumbnailAuthor">{props.post.author.username}</div>
             <div className="thumbnailTags">{tags}</div>
         </div>
     );
