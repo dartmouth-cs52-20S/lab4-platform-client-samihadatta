@@ -3,8 +3,9 @@
 
 import axios from 'axios';
 
-const ROOT_URL = 'https://samihadatta-cs52-blog-v2.herokuapp.com/api';
-// const ROOT_URL = 'http://localhost:9090/api';
+// const ROOT_URL = 'https://samihadatta-cs52-blog.herokuapp.com/api';
+// const ROOT_URL = 'https://samihadatta-cs52-blog-v2.herokuapp.com/api';
+const ROOT_URL = 'http://localhost:9090/api';
 // const ROOT_URL = 'https://platform.cs52.me/api';
 // const API_KEY = '?key=s_datta';
 
@@ -23,7 +24,10 @@ export const ActionTypes = {
     UPDATE_COMMENT: 'UPDATE_COMMENT',
     DELETE_COMMENT: 'DELETE_COMMENT',
     DELETE_COMMENTS: 'DELETE_COMMENTS',
-    SEARCH_FILTER: 'SEARCH_FILTER',
+    SEARCH: 'SEARCH',
+    AUTH_USER: 'AUTH_USER',
+    DEAUTH_USER: 'DEAUTH_USER',
+    AUTH_ERROR: 'AUTH_ERROR',
 };
 
 
@@ -59,7 +63,7 @@ export function createPost(post, history) {
     // eslint-disable-next-line no-param-reassign
     // post.tags = post.tags.split(',');
     return (dispatch) => {
-        axios.post(`${ROOT_URL}/posts`, post)
+        axios.post(`${ROOT_URL}/posts`, post, { headers: { authorization: localStorage.getItem('token') } })
             .then((response) => {
                 dispatch({ type: ActionTypes.CREATE_POST, payload: response.data });
                 history.push('/');
@@ -78,7 +82,7 @@ export function updatePost(post, callback) {
     /* axios put */
     // post.tags = post.tags.split(',');
     return (dispatch) => {
-        axios.put(`${ROOT_URL}/posts/${post._id}`, post)
+        axios.put(`${ROOT_URL}/posts/${post._id}`, post, { headers: { authorization: localStorage.getItem('token') } })
             .then((response) => {
                 dispatch({ type: ActionTypes.UPDATE_POST, payload: response.data });
                 callback();
@@ -100,7 +104,7 @@ export function fetchPost(id) {
             .then((response) => {
                 if (!('message' in response.data)) {
                     dispatch({ type: ActionTypes.FETCH_POST, payload: response.data });
-                    dispatch({ type: ActionTypes.ERROR_CLEAR, payload: '' });
+                    // dispatch({ type: ActionTypes.ERROR_CLEAR, payload: '' });
                 } else {
                     // errorSet(response.data.message);
                     dispatch({ type: ActionTypes.ERROR_SET, payload: response.data.message });
@@ -110,6 +114,7 @@ export function fetchPost(id) {
                 // //console.log(response);
             })
             .catch((error) => {
+                // dispatch with the error
                 // console.log('error');
                 // console.log(error);
             });
@@ -119,7 +124,7 @@ export function fetchPost(id) {
 export function deletePost(id, history) {
     /* axios delete */
     return (dispatch) => {
-        axios.delete(`${ROOT_URL}/posts/${id}`)
+        axios.delete(`${ROOT_URL}/posts/${id}`, { headers: { authorization: localStorage.getItem('token') } })
             .then((response) => {
                 dispatch({ type: ActionTypes.DELETE_POST, payload: response.data });
                 // console.log('response');
@@ -209,7 +214,7 @@ export function addComment(postId, comment) {
     // console.log('in actions addComment');
     // console.log(comment);
     return (dispatch) => {
-        axios.post(`${ROOT_URL}/comments/post=${postId}`, comment)
+        axios.post(`${ROOT_URL}/comments/post=${postId}`, comment, { headers: { authorization: localStorage.getItem('token') } })
             .then((result) => {
                 // console.log('add comment response');
                 // console.log(result);
@@ -246,7 +251,7 @@ export function updateComment(commentId, comment, callback) {
     // console.log('comment');
     // console.log(comment);
     return (dispatch) => {
-        axios.put(`${ROOT_URL}/comments/comment=${commentId}`, comment)
+        axios.put(`${ROOT_URL}/comments/comment=${commentId}`, comment, { headers: { authorization: localStorage.getItem('token') } })
             .then((result) => {
                 // dispatch({ type: ActionTypes.UPDATE_COMMENT, payload: response.data });
                 callback();
@@ -279,7 +284,7 @@ export function updateComment(commentId, comment, callback) {
 
 export function deleteComment(commentId, comment) {
     return (dispatch) => {
-        axios.delete(`${ROOT_URL}/comments/comment=${commentId}`)
+        axios.delete(`${ROOT_URL}/comments/comment=${commentId}`, { headers: { authorization: localStorage.getItem('token') } })
             .then((result) => {
                 // dispatch({ type: ActionTypes.DELETE_COMMENT, payload: response.data });
                 // console.log('response');
@@ -310,7 +315,7 @@ export function deleteComment(commentId, comment) {
 
 export function deleteComments(postId) {
     return (dispatch) => {
-        axios.delete(`${ROOT_URL}/comments/post=${postId}`)
+        axios.delete(`${ROOT_URL}/comments/post=${postId}`, { headers: { authorization: localStorage.getItem('token') } })
             .then((response) => {
                 dispatch({ type: ActionTypes.DELETE_COMMENT, payload: response.data });
                 // console.log('response');
@@ -327,11 +332,73 @@ export function search(request) {
     return (dispatch) => {
         axios.get(`${ROOT_URL}/search/posts/${request}`)
             .then((response) => {
-                dispatch({ type: ActionTypes.SEARCH_FILTER, payload: response.data });
+                dispatch({ type: ActionTypes.SEARCH, payload: response.data });
             })
             .catch((error) => {
                 console.log('error');
                 console.log(error);
             });
+    };
+}
+
+export function signinUser({ username, email, password }, history) {
+    // takes in an object with email and password (minimal user object)
+    // returns a thunk method that takes dispatch as an argument (just like our create post method really)
+    // does an axios.post on the /signin endpoint
+    // on success does:
+    //  dispatch({ type: ActionTypes.AUTH_USER });
+    //  localStorage.setItem('token', response.data.token);
+    // on error should dispatch(authError(`Sign In Failed: ${error.response.data}`));
+    return (dispatch) => {
+        axios.post(`${ROOT_URL}/signin`, { email, password, username })
+            .then((response) => {
+                localStorage.setItem('token', response.data.token);
+                dispatch({ type: ActionTypes.AUTH_USER });
+                history.push('/');
+            })
+            .catch((error) => {
+                dispatch(authError(`Sign In Failed: ${error.response.data}`));
+            });
+    };
+}
+
+export function signupUser({ email, password, username }, history) {
+    // takes in an object with email and password (minimal user object)
+    // returns a thunk method that takes dispatch as an argument (just like our create post method really)
+    // does an axios.post on the /signup endpoint (only difference from above)
+    // on success does:
+    //  dispatch({ type: ActionTypes.AUTH_USER });
+    //  localStorage.setItem('token', response.data.token);
+    // on error should dispatch(authError(`Sign Up Failed: ${error.response.data}`));
+    return (dispatch) => {
+        axios.post(`${ROOT_URL}/signup`, { email, password, username })
+            .then((response) => {
+                localStorage.setItem('token', response.data.token);
+                dispatch({ type: ActionTypes.AUTH_USER });
+                history.push('/');
+            })
+            .catch((error) => {
+                dispatch(authError(`Sign Up Failed: ${error.response.data}`));
+            });
+    };
+}
+
+
+// deletes token from localstorage
+// and deauths
+export function signoutUser(history) {
+    return (dispatch) => {
+        localStorage.removeItem('token');
+        dispatch({ type: ActionTypes.DEAUTH_USER });
+        history.push('/');
+    };
+}
+
+// trigger to deauth if there is error
+// can also use in your error reducer if you have one to display an error message
+export function authError(error) {
+    return {
+        type: ActionTypes.AUTH_ERROR,
+        message: error,
     };
 }

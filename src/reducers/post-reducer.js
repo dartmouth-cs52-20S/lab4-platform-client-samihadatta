@@ -14,7 +14,7 @@ const PostReducer = (state = initialState, action) => {
         return { ...state, current: action.payload };
     case ActionTypes.FETCH_POST:
         return { ...state, current: action.payload };
-    case ActionTypes.SEARCH_FILTER:
+    case ActionTypes.SEARCH:
         return { ...state, searched: action.payload };
     default:
         return state;

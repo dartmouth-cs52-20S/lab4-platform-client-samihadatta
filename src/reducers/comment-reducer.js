@@ -1,20 +1,8 @@
 import { ActionTypes } from '../actions';
 
 const initialState = {
-    all: [],
-    current: {},
     currentComments: [],
-    error: '',
 };
-
-/*
-FETCH_COMMENTS: 'FETCH_COMMENTS',
-    FETCH_COMMENT: 'FETCH_COMMENT',
-    ADD_COMMENT: 'ADD_COMMENT',
-    UPDATE_COMMENT: 'UPDATE_COMMENT',
-    DELETE_COMMENT: 'DELETE_COMMENT',
-    DELETE_COMMENTS: 'DELETE_COMMENTS',
-*/
 
 const CommentReducer = (state = initialState, action) => {
     switch (action.type) {

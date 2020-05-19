@@ -10,10 +10,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import marked from 'marked';
 import {
-    fetchPost, deletePost, updatePost, fetchComments,
+    fetchPost, deletePost, updatePost, fetchComments, errorClear,
 } from '../actions';
 import { imageUrlWorks } from './lib';
-import ErrorModal from './error';
+// import ErrorModal from './error';
 import Loading from './loading';
 import Comment from './comment';
 
@@ -34,6 +34,7 @@ class Post extends Component {
     componentDidMount() {
         this.props.fetchPost(this.props.match.params.postID);
         this.props.fetchComments(this.props.match.params.postID);
+        this.props.errorClear();
     }
 
     startEditing = () => {
@@ -155,6 +156,7 @@ class Post extends Component {
                 </div>
                 <div className="post-info">
                     <div className="post-title">{this.props.currentPost.title}</div>
+                    <div>{this.props.currentPost.author.username}</div>
                     <div className="post-tags">{tagsString}</div>
                     {this.renderCoverImage()}
                     <div className="post-content" dangerouslySetInnerHTML={{ __html: marked(this.props.currentPost.content || '') }} />
@@ -265,14 +267,14 @@ class Post extends Component {
         if (this.props.currentPost === undefined || Object.keys(this.props.currentPost).length <= 0 || this.props.currentPost === {}) {
             return (
                 <div>
-                    <ErrorModal />
+                    {/* <ErrorModal /> */}
                     <Loading />
                 </div>
             );
         } else if (this.state.isEditing) { // if (this.props.currentPost !== undefined && this.props.currentPost.length < 0) {
             return (
                 <div>
-                    <ErrorModal appElement={document.getElementById('post')} />
+                    {/* <ErrorModal appElement={document.getElementById('post')} /> */}
                     {this.renderEditing()}
                 </div>
             );
@@ -280,7 +282,7 @@ class Post extends Component {
             // console.log('we in here');
             return (
                 <div>
-                    <ErrorModal appElement={document.getElementById('post')} />
+                    {/* <ErrorModal appElement={document.getElementById('post')} /> */}
                     {this.renderShow()}
                 </div>
             );
@@ -296,5 +298,5 @@ const mapStateToProps = (reduxState) => {
 };
 
 export default connect(mapStateToProps, {
-    fetchPost, deletePost, updatePost, fetchComments,
+    fetchPost, deletePost, updatePost, fetchComments, errorClear,
 })(Post);
