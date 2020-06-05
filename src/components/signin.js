@@ -16,7 +16,7 @@ class SignIn extends Component {
             email: '',
             password: '',
             username: '',
-            secret: '',
+            // secret: '',
         };
     }
 
@@ -29,13 +29,14 @@ class SignIn extends Component {
     }
 
     onPasswordChange = (event) => {
-        const passwordLength = event.target.value.length;
-        let secret = '';
-        // eslint-disable-next-line no-plusplus
-        for (let i = 0; i < passwordLength; i++) {
-            secret += '•';
-        }
-        this.setState({ password: event.target.value, secret });
+        // const passwordLength = event.target.value.length;
+        // let secret = '';
+        // // eslint-disable-next-line no-plusplus
+        // for (let i = 0; i < passwordLength; i++) {
+        //     secret += '•';
+        // }
+        // this.setState({ password: event.target.value, secret });
+        this.setState({ password: event.target.value });
     }
 
     signIn = () => {
@@ -70,7 +71,7 @@ class SignIn extends Component {
                 </div>
                 <div className="edit-field">
                     <div className="edit-label">Password</div>
-                    <TextareaAutosize onChange={this.onPasswordChange} placeholder="password" value={this.state.secret} />
+                    <TextareaAutosize onChange={this.onPasswordChange} placeholder="password" value={this.state.password} />
                 </div>
                 {this.renderError()}
                 <div className="action-button" onClick={this.signIn}>
