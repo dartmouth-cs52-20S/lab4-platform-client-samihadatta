@@ -3,7 +3,7 @@
 
 import axios from 'axios';
 
-const ROOT_URL = 'https://samihadatta-cs52-blog.herokuapp.com/api';
+export const ROOT_URL = 'https://samihadatta-cs52-blog.herokuapp.com/api';
 // const ROOT_URL = 'https://samihadatta-cs52-blog-v2.herokuapp.com/api';
 // const ROOT_URL = 'http://localhost:9090/api';
 // const ROOT_URL = 'https://platform.cs52.me/api';

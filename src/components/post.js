@@ -16,6 +16,7 @@ import { imageUrlWorks } from './lib';
 // import ErrorModal from './error';
 import Loading from './loading';
 import Comment from './comment';
+import uploadImage from '../s3';
 
 class Post extends Component {
     constructor(props) {
@@ -28,6 +29,10 @@ class Post extends Component {
             currentCoverUrl: '',
             addingComment: false,
             coverUrlFail: false,
+            contentUrl: null,
+            preview: null,
+            // eslint-disable-next-line react/no-unused-state
+            file: null,
         };
     }
 
@@ -51,32 +56,66 @@ class Post extends Component {
 
     handleUpdatePost = () => {
         if (imageUrlWorks(this.state.currentCoverUrl) || this.state.currentCoverUrl === '' || this.state.currentCoverUrl === undefined) {
-            this.setState({ coverUrlFail: false });
-            // console.log('current coverUrl');
-            // console.log(this.state.coverUrl);
-            let tags = this.state.currentTags;
-            tags = tags.split(',');
-            // eslint-disable-next-line no-plusplus
-            for (let i = 0; i < tags.length; i++) {
-                tags[i] = tags[i].trim();
-            }
-            // console.log('trimmed tags');
-            // console.log(tags);
-            const post = {
-                title: this.state.currentTitle,
-                tags,
-                // tags: this.state.currentTags,
-                content: this.state.currentContent,
-                coverUrl: this.state.currentCoverUrl,
-                _id: this.props.currentPost._id,
-            };
+            if (this.state.file) {
+                uploadImage(this.state.file).then((url) => {
+                    // use url for content_url and
+                    // either run your createPost actionCreator
+                    // or your updatePost actionCreator
+                    let tags = this.state.currentTags;
+                    tags = tags.split(',');
+                    // eslint-disable-next-line no-plusplus
+                    for (let i = 0; i < tags.length; i++) {
+                        tags[i] = tags[i].trim();
+                    }
+                    // console.log('trimmed tags');
+                    // console.log(tags);
+                    const post = {
+                        title: this.state.currentTitle,
+                        tags,
+                        // tags: this.state.currentTags,
+                        content: this.state.currentContent,
+                        coverUrl: this.state.coverUrl,
+                        contentUrl: url,
+                        _id: this.props.currentPost._id,
+                    };
 
-            this.props.updatePost(post, () => this.setState({ isEditing: false }));
-            // console.log('trying to fix');
-            // console.log(this.props.currentPost);
+                    this.props.updatePost(post, () => this.setState({ isEditing: false }));
+                }).catch((error) => {
+                    // handle error
+                    console.log('s3 error ooooops');
+                });
+            }
         } else {
             this.setState({ coverUrlFail: true });
         }
+
+        // if (imageUrlWorks(this.state.currentCoverUrl) || this.state.currentCoverUrl === '' || this.state.currentCoverUrl === undefined) {
+        // this.setState({ coverUrlFail: false });
+        // console.log('current coverUrl');
+        // console.log(this.state.coverUrl);
+        // let tags = this.state.currentTags;
+        // tags = tags.split(',');
+        // // eslint-disable-next-line no-plusplus
+        // for (let i = 0; i < tags.length; i++) {
+        //     tags[i] = tags[i].trim();
+        // }
+        // // console.log('trimmed tags');
+        // // console.log(tags);
+        // const post = {
+        //     title: this.state.currentTitle,
+        //     tags,
+        //     // tags: this.state.currentTags,
+        //     content: this.state.currentContent,
+        //     coverUrl: this.state.currentCoverUrl,
+        //     _id: this.props.currentPost._id,
+        // };
+
+        // this.props.updatePost(post, () => this.setState({ isEditing: false }));
+        // console.log('trying to fix');
+        // console.log(this.props.currentPost);
+        // } else {
+        //     this.setState({ coverUrlFail: true });
+        // }
         // setTimeout(() => { this.setState({ isEditing: false }); }, 0);
     }
 
@@ -118,6 +157,25 @@ class Post extends Component {
 
     handleAddedComment = () => {
         this.setState({ addingComment: false });
+    }
+
+    onImageUpload = (event) => {
+        const file = event.target.files[0];
+        // Handle null file
+        // Get url of the file and set it to the src of preview
+        if (file) {
+            this.setState({ preview: window.URL.createObjectURL(file), file });
+        }
+    }
+
+    renderImageUpload = () => {
+        if (this.state.contentUrl !== null) {
+            return (
+                <img alt="s3 content" src={this.state.contentUrl} />
+            );
+        } else {
+            return null;
+        }
     }
 
     renderCoverImage = () => {
@@ -179,6 +237,7 @@ class Post extends Component {
                     <div className="post-tags">{tagsString}</div>
                     {this.renderCoverImage()}
                     <div className="post-content" dangerouslySetInnerHTML={{ __html: marked(this.props.currentPost.content || '') }} />
+                    {this.renderImageUpload()}
                 </div>
                 {this.renderComments()}
             </div>
@@ -198,6 +257,7 @@ class Post extends Component {
                     <div className="post-tags">{tagsString}</div>
                     {this.renderCoverImage()}
                     <div className="post-content" dangerouslySetInnerHTML={{ __html: marked(this.props.currentPost.content || '') }} />
+                    {this.renderImageUpload()}
                 </div>
                 {this.renderComments()}
             </div>
@@ -235,6 +295,8 @@ class Post extends Component {
                         <div className="edit-label">Content</div>
                         <TextareaAutosize value={this.state.currentContent} placeholder="content" onChange={this.onContentChange} />
                     </div>
+                    <img id="preview" alt="preview" src={this.state.preview} />
+                    <input type="file" name="coverImage" onChange={this.onImageUpload} />
                     <div className="edit-actions">
                         <div onClick={this.handleUpdatePost} className="action-button"><FontAwesomeIcon icon={faCheck} className="icon" />Update Post</div>
                         <div onClick={this.cancelUpdate} className="action-button"><FontAwesomeIcon icon={faTimes} className="icon" />Cancel</div>
