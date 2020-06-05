@@ -10,7 +10,7 @@
     "test": "eslint src/**.js",
     "build": "yarn clean; NODE_ENV=production webpack --colors",
     "clean": "rimraf dist",
-    "deploy": "yarn build; surge -p dist -d samihadatta-cs52-blog.surge.sh; yarn clean"
+    "deploy": "yarn build; surge -p dist -d samihadatta-s3-ec.surge.sh; yarn clean"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",

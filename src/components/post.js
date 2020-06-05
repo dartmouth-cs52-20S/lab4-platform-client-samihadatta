@@ -84,6 +84,26 @@ class Post extends Component {
                     // handle error
                     console.log('s3 error ooooops');
                 });
+            } else {
+                let tags = this.state.currentTags;
+                tags = tags.split(',');
+                // eslint-disable-next-line no-plusplus
+                for (let i = 0; i < tags.length; i++) {
+                    tags[i] = tags[i].trim();
+                }
+                // console.log('trimmed tags');
+                // console.log(tags);
+                const post = {
+                    title: this.state.currentTitle,
+                    tags,
+                    // tags: this.state.currentTags,
+                    content: this.state.currentContent,
+                    coverUrl: this.state.coverUrl,
+                    contentUrl: null,
+                    _id: this.props.currentPost._id,
+                };
+
+                this.props.updatePost(post, () => this.setState({ isEditing: false }));
             }
         } else {
             this.setState({ coverUrlFail: true });
